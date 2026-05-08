@@ -86,29 +86,9 @@ export default function SellerProfile() {
 
       <Navbar />
 
-      {/* BOTÓN VOLVER */}
-
-      <button
-        onClick={() =>
-          navigate("/seller-profile")
-        }
-        className="
-          mb-6
-          bg-gray-800
-          hover:bg-gray-900
-          text-white
-          px-6
-          py-3
-          rounded-2xl
-          font-bold
-          shadow-md
-          transition
-        "
-      >
-        ← Volver
-      </button>
-
-      {/* HEADER */}
+      {/* ===================================
+          HEADER
+      =================================== */}
 
       <div className="
         bg-white
@@ -116,37 +96,74 @@ export default function SellerProfile() {
         shadow-md
         p-6
         flex
+        flex-col
+        lg:flex-row
         justify-between
         items-center
         mb-8
+        gap-6
       ">
 
         {/* LEFT */}
 
-        <div>
+        <div className="
+          flex
+          items-center
+          gap-6
+        ">
 
-          <h1 className="
-            text-5xl
-            font-black
-          ">
-            Panel Seller 🏪
-          </h1>
+          {/* PROFILE IMAGE */}
 
-          <p className="
-            text-gray-500
-            mt-2
-            text-lg
-          ">
-            Gestión de productos y pedidos
-          </p>
+          <img
+            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e"
+            alt="Seller"
+            className="
+              w-28
+              h-28
+              rounded-full
+              object-cover
+              border-4
+              border-indigo-500
+              shadow-lg
+            "
+          />
 
-          <p className="
-            mt-4
-            text-gray-700
-          ">
-            <strong>Usuario:</strong>{" "}
-            {user?.email}
-          </p>
+          {/* INFO */}
+
+          <div>
+
+            <h1 className="
+              text-5xl
+              font-black
+            ">
+              Panel Seller 🏪
+            </h1>
+
+            <p className="
+              text-gray-500
+              mt-2
+              text-lg
+            ">
+              Gestión de productos y pedidos
+            </p>
+
+            <p className="
+              mt-4
+              text-gray-700
+            ">
+              <strong>Usuario:</strong>{" "}
+              {user?.email}
+            </p>
+
+            <p className="
+              text-gray-700
+              mt-1
+            ">
+              <strong>Tienda:</strong>{" "}
+              {formData.store}
+            </p>
+
+          </div>
 
         </div>
 
@@ -155,6 +172,7 @@ export default function SellerProfile() {
         <div className="
           flex
           gap-4
+          flex-wrap
         ">
 
           <button
@@ -199,7 +217,68 @@ export default function SellerProfile() {
 
       </div>
 
-      {/* PROFILE FORM */}
+      {/* ===================================
+          BANNER
+      =================================== */}
+
+      <div className="
+        relative
+        rounded-3xl
+        overflow-hidden
+        shadow-lg
+        mb-10
+        h-[300px]
+      ">
+
+        <img
+          src="https://images.unsplash.com/photo-1441986300917-64674bd600d8"
+          alt="Bodegón Virtual"
+          className="
+            w-full
+            h-full
+            object-cover
+          "
+        />
+
+        <div className="
+          absolute
+          inset-0
+          bg-black/50
+          flex
+          flex-col
+          justify-center
+          items-center
+          text-center
+          p-8
+        ">
+
+          <h1 className="
+            text-5xl
+            font-black
+            text-white
+            mb-4
+          ">
+            Bienvenido Seller 🚀
+          </h1>
+
+          <p className="
+            text-xl
+            text-gray-200
+            max-w-3xl
+          ">
+            Administra productos,
+            ventas y pedidos de
+            Bodegón Virtual con un
+            panel moderno y dinámico.
+          </p>
+
+        </div>
+
+      </div>
+
+      {/* ===================================
+          PROFILE FORM
+      =================================== */}
 
       {editing && (
 
@@ -324,7 +403,9 @@ export default function SellerProfile() {
         </div>
       )}
 
-      {/* CARDS */}
+      {/* ===================================
+          CARDS
+      =================================== */}
 
       <div className="
         grid
@@ -376,7 +457,7 @@ export default function SellerProfile() {
 
         </div>
 
-        {/* MIS PRODUCTOS */}
+        {/* INVENTARIO */}
 
         <div
           onClick={() =>

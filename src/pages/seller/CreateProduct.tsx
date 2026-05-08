@@ -28,10 +28,12 @@ export default function CreateProduct() {
     useState<any>({
       name: "",
       description: "",
+      category: "Damas",
+      size: "M",
+      gender: "Mujer",
       price: "",
       stock: "",
-      imageUrl:
-        "https://images.unsplash.com/photo-1523381210434-271e8be1f52b",
+      imageUrl: "",
     });
 
   // ============================
@@ -45,6 +47,32 @@ export default function CreateProduct() {
 
         setLoading(true);
 
+        // ============================
+        // CATEGORY IMAGES
+        // ============================
+
+        const images: any = {
+
+          Damas:
+            "https://images.unsplash.com/photo-1483985988355-763728e1935b",
+
+          Caballeros:
+            "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
+
+          Niños:
+            "https://images.unsplash.com/photo-1519238359922-989348752efb",
+
+          Zapatos:
+            "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+
+          Accesorios:
+            "https://images.unsplash.com/photo-1523170335258-f5ed11844a49",
+        };
+
+        // ============================
+        // BODY
+        // ============================
+
         const body = {
 
           categoryId: 1,
@@ -55,6 +83,15 @@ export default function CreateProduct() {
           description:
             product.description,
 
+          category:
+            product.category,
+
+          size:
+            product.size,
+
+          gender:
+            product.gender,
+
           price: Number(
             product.price
           ),
@@ -64,13 +101,18 @@ export default function CreateProduct() {
           ),
 
           imageUrl:
-            product.imageUrl,
+            images[
+              product.category
+            ],
 
-          brand: "Nike",
+          brand:
+            "Bodegón Virtual",
 
-          model: "2026",
+          model:
+            "2026",
 
-          color: "Negro",
+          color:
+            "Negro",
 
           weight: 1,
         };
@@ -80,43 +122,57 @@ export default function CreateProduct() {
           body
         );
 
+        // ============================
+        // API
+        // ============================
+
         await createProduct(body);
 
-// =====================================
-// SAVE LOCAL PRODUCTS
-// =====================================
+        // ============================
+        // LOCAL STORAGE
+        // ============================
 
-const savedProducts =
-  localStorage.getItem(
-    "products"
-  );
+        const savedProducts =
+          localStorage.getItem(
+            "products"
+          );
 
-const products =
-  savedProducts
-    ? JSON.parse(savedProducts)
-    : [];
+        const products =
+          savedProducts
+            ? JSON.parse(
+                savedProducts
+              )
+            : [];
 
-const newProduct = {
-  id: Date.now(),
-  ...body,
-  image: body.imageUrl,
-};
+        const newProduct = {
+          id: Date.now(),
+          ...body,
+          image:
+            body.imageUrl,
+        };
 
-products.push(newProduct);
+        products.push(
+          newProduct
+        );
 
-localStorage.setItem(
-  "products",
-  JSON.stringify(products)
-);
+        localStorage.setItem(
+          "products",
+          JSON.stringify(
+            products
+          )
+        );
 
-alert(
-  "✅ Producto creado correctamente"
-);
+        alert(
+          "✅ Producto creado correctamente"
+        );
 
-// REDIRECT
+        // ============================
+        // REDIRECT
+        // ============================
 
-navigate("/seller/inventory");
-        
+        navigate(
+          "/seller/inventory"
+        );
 
       } catch (error) {
 
@@ -176,7 +232,6 @@ navigate("/seller/inventory");
 
       </div>
 
-
       {/* FORM */}
 
       <div className="
@@ -235,6 +290,86 @@ navigate("/seller/inventory");
             "
           />
 
+          {/* CATEGORY */}
+
+          <select
+            value={product.category}
+            onChange={(e) =>
+              setProduct({
+                ...product,
+                category:
+                  e.target.value,
+              })
+            }
+            className="
+              border
+              rounded-2xl
+              p-4
+            "
+          >
+
+            <option value="Damas">
+              👩 Damas
+            </option>
+
+            <option value="Caballeros">
+              👨 Caballeros
+            </option>
+
+            <option value="Niños">
+              👦 Niños
+            </option>
+
+            <option value="Zapatos">
+              👟 Zapatos
+            </option>
+
+            <option value="Accesorios">
+              👜 Accesorios
+            </option>
+
+          </select>
+
+          {/* SIZE */}
+
+          <select
+            value={product.size}
+            onChange={(e) =>
+              setProduct({
+                ...product,
+                size:
+                  e.target.value,
+              })
+            }
+            className="
+              border
+              rounded-2xl
+              p-4
+            "
+          >
+
+            <option value="XS">
+              XS
+            </option>
+
+            <option value="S">
+              S
+            </option>
+
+            <option value="M">
+              M
+            </option>
+
+            <option value="L">
+              L
+            </option>
+
+            <option value="XL">
+              XL
+            </option>
+
+          </select>
+
           {/* PRICE */}
 
           <input
@@ -272,27 +407,6 @@ navigate("/seller/inventory");
               border
               rounded-2xl
               p-4
-            "
-          />
-
-          {/* IMAGE */}
-
-          <input
-            type="text"
-            placeholder="URL imagen"
-            value={product.imageUrl}
-            onChange={(e) =>
-              setProduct({
-                ...product,
-                imageUrl:
-                  e.target.value,
-              })
-            }
-            className="
-              border
-              rounded-2xl
-              p-4
-              md:col-span-2
             "
           />
 

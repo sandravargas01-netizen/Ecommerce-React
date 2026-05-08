@@ -1,12 +1,20 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState
+} from "react";
 
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate
+} from "react-router-dom";
 
 import Navbar from "../../components/Navbar";
 
+import mockProducts from "../../moks/mockProducts";
+
 export default function Inventory() {
 
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   // ===============================
   // PRODUCTS
@@ -16,24 +24,90 @@ export default function Inventory() {
     useState<any[]>([]);
 
   // ===============================
+  // SEARCH
+  // ===============================
+
+  const [search, setSearch] =
+    useState("");
+
+  // ===============================
+  // CATEGORY
+  // ===============================
+
+  const [
+    selectedCategory,
+    setSelectedCategory
+  ] = useState("Todos");
+
+  // ===============================
   // LOAD PRODUCTS
   // ===============================
 
   useEffect(() => {
 
-    const savedProducts =
+    // LOCAL PRODUCTS
+
+    const localProducts =
       localStorage.getItem(
         "products"
       );
 
-    if (savedProducts) {
+    const savedProducts =
+      localProducts
+        ? JSON.parse(localProducts)
+        : [];
 
-      setProducts(
-        JSON.parse(savedProducts)
-      );
-    }
+    // COMBINE PRODUCTS
+
+    setProducts([
+      ...mockProducts,
+      ...savedProducts,
+    ]);
 
   }, []);
+
+  // ===============================
+  // CATEGORIES
+  // ===============================
+
+  const categories = [
+    "Todos",
+    "Damas",
+    "Caballeros",
+    "Niños",
+    "Zapatos",
+    "Accesorios",
+  ];
+
+  // ===============================
+  // FILTER PRODUCTS
+  // ===============================
+
+  const filteredProducts =
+    products.filter((product) => {
+
+      const matchSearch =
+        product.name
+          ?.toLowerCase()
+          .includes(
+            search.toLowerCase()
+          );
+
+      const matchCategory =
+
+        selectedCategory ===
+        "Todos"
+
+        ||
+
+        product.category ===
+        selectedCategory;
+
+      return (
+        matchSearch &&
+        matchCategory
+      );
+    });
 
   // ===============================
   // DELETE PRODUCT
@@ -50,13 +124,25 @@ export default function Inventory() {
 
     if (!confirmDelete) return;
 
+    // REMOVE ONLY LOCAL PRODUCTS
+
+    const localProducts =
+      localStorage.getItem(
+        "products"
+      );
+
+    const savedProducts =
+      localProducts
+        ? JSON.parse(localProducts)
+        : [];
+
     const updatedProducts =
-      products.filter(
-        (product) =>
+      savedProducts.filter(
+        (product: any) =>
           product.id !== id
       );
 
-    setProducts(updatedProducts);
+    // SAVE
 
     localStorage.setItem(
       "products",
@@ -64,6 +150,13 @@ export default function Inventory() {
         updatedProducts
       )
     );
+
+    // UPDATE SCREEN
+
+    setProducts([
+      ...mockProducts,
+      ...updatedProducts,
+    ]);
   };
 
   return (
@@ -78,7 +171,9 @@ export default function Inventory() {
 
       <Navbar />
 
-      {/* BOTÓN VOLVER */}
+      {/* =====================================
+          BACK BUTTON
+      ===================================== */}
 
       <button
         onClick={() =>
@@ -100,7 +195,9 @@ export default function Inventory() {
         ← Volver
       </button>
 
-      {/* HEADER */}
+      {/* =====================================
+          HEADER
+      ===================================== */}
 
       <div
         className="
@@ -154,7 +251,98 @@ export default function Inventory() {
 
       </div>
 
-      {/* TOP BUTTON */}
+      {/* =====================================
+          SEARCH + FILTERS
+      ===================================== */}
+
+      <div className="
+        bg-white
+        rounded-3xl
+        shadow-md
+        p-6
+        mb-8
+      ">
+
+        {/* SEARCH */}
+
+        <input
+          type="text"
+          placeholder="Buscar productos..."
+          value={search}
+          onChange={(e) =>
+            setSearch(
+              e.target.value
+            )
+          }
+          className="
+            w-full
+            border
+            rounded-2xl
+            p-4
+            mb-6
+            outline-none
+            focus:ring-4
+            focus:ring-indigo-300
+          "
+        />
+
+        {/* CATEGORIES */}
+
+        <div className="
+          flex
+          gap-3
+          flex-wrap
+        ">
+
+          {
+            categories.map(
+              (category) => (
+
+                <button
+                  key={category}
+                  onClick={() =>
+                    setSelectedCategory(
+                      category
+                    )
+                  }
+                  className={`
+                    px-5
+                    py-2
+                    rounded-2xl
+                    font-bold
+                    transition
+
+                    ${
+                      selectedCategory ===
+                      category
+
+                      ? `
+                        bg-indigo-600
+                        text-white
+                      `
+
+                      : `
+                        bg-gray-200
+                        text-gray-700
+                      `
+                    }
+                  `}
+                >
+
+                  {category}
+
+                </button>
+              )
+            )
+          }
+
+        </div>
+
+      </div>
+
+      {/* =====================================
+          CREATE BUTTON
+      ===================================== */}
 
       <div
         className="
@@ -187,9 +375,11 @@ export default function Inventory() {
 
       </div>
 
-      {/* EMPTY */}
+      {/* =====================================
+          EMPTY
+      ===================================== */}
 
-      {products.length === 0 && (
+      {filteredProducts.length === 0 && (
 
         <div
           className="
@@ -224,7 +414,9 @@ export default function Inventory() {
         </div>
       )}
 
-      {/* PRODUCTS */}
+      {/* =====================================
+          PRODUCTS
+      ===================================== */}
 
       <div
         className="
@@ -236,7 +428,7 @@ export default function Inventory() {
         "
       >
 
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
 
           <div
             key={product.id}
@@ -247,13 +439,17 @@ export default function Inventory() {
               overflow-hidden
               transition
               hover:scale-105
+              duration-300
             "
           >
 
             {/* IMAGE */}
 
             <img
-              src={product.image}
+              src={
+                product.imageUrl ||
+                product.image
+              }
               alt={product.name}
               className="
                 w-full
@@ -266,6 +462,8 @@ export default function Inventory() {
 
             <div className="p-6">
 
+              {/* CATEGORY */}
+
               <span
                 className="
                   bg-indigo-100
@@ -277,8 +475,12 @@ export default function Inventory() {
                   font-semibold
                 "
               >
-                Bodegón Virtual
+                {
+                  product.category
+                }
               </span>
+
+              {/* NAME */}
 
               <h2
                 className="
@@ -291,6 +493,8 @@ export default function Inventory() {
                 {product.name}
               </h2>
 
+              {/* DESCRIPTION */}
+
               <p
                 className="
                   text-gray-500
@@ -299,6 +503,36 @@ export default function Inventory() {
               >
                 {product.description}
               </p>
+
+              {/* SIZE */}
+
+              {
+                product.size && (
+
+                  <div className="
+                    mb-4
+                  ">
+
+                    <span
+                      className="
+                        bg-gray-200
+                        px-3
+                        py-1
+                        rounded-full
+                        text-sm
+                        font-semibold
+                      "
+                    >
+                      Talla:
+                      {" "}
+                      {product.size}
+                    </span>
+
+                  </div>
+                )
+              }
+
+              {/* PRICE */}
 
               <h3
                 className="
@@ -310,6 +544,8 @@ export default function Inventory() {
               >
                 ${product.price}
               </h3>
+
+              {/* STOCK */}
 
               <p
                 className="

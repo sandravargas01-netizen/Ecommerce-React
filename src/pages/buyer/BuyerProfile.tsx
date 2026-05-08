@@ -303,44 +303,7 @@ export default function BuyerProfile() {
             </button>
 
 
-            {/* CREATE PRODUCT */}
-
-            <button
-              onClick={() =>
-                navigate("/seller/products")
-              }
-              className="
-                bg-purple-600
-                hover:bg-purple-700
-                text-white
-                rounded-3xl
-                p-6
-                shadow-lg
-                transition
-                text-left
-              "
-            >
-
-              <div className="text-4xl mb-3">
-                ➕
-              </div>
-
-              <h2
-                className="
-                  text-2xl
-                  font-bold
-                  mb-1
-                "
-              >
-                Crear producto
-              </h2>
-
-              <p className="text-purple-100">
-                Registrar productos
-              </p>
-
-            </button>
-
+            
 
             {/* CART */}
 
