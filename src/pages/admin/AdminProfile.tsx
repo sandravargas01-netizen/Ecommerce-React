@@ -1,704 +1,543 @@
-import { useState } from "react";
+import AdminSidebar from "../../components/AdminSidebar";
 
-import { useNavigate } from "react-router-dom";
+import {
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  Area,
+  AreaChart,
 
-import Navbar from "../../components/Navbar";
+} from "recharts";
 
-import { useAuth } from "../../context/AuthContext";
+
 
 export default function AdminProfile() {
 
-  const navigate = useNavigate();
+  // =====================================
+  // ESTADÍSTICAS
+  // =====================================
 
-  const { logout } = useAuth();
+const salesData = [
+  { month: "Ene", ventas: 12000 },
+  { month: "Feb", ventas: 15000 },
+  { month: "Mar", ventas: 14000 },
+  { month: "Abr", ventas: 18000 },
+  { month: "May", ventas: 26000 },
+  { month: "Jun", ventas: 20000 },
+];
 
-  // ===============================
-  // EDIT MODE
-  // ===============================
-
-  const [editing, setEditing] =
-    useState(false);
-
-  // ===============================
-  // FORM DATA
-  // ===============================
-
-  const [name, setName] =
-    useState("Administrador Principal");
-
-  const [email, setEmail] =
-    useState("admin@ecommerce.com");
-
-  const [phone, setPhone] =
-    useState("3000000000");
-
-  const [address, setAddress] =
-    useState("Cali, Colombia");
-
-  const [password, setPassword] =
-    useState("");
-
-  // ===============================
-  // SAVE
-  // ===============================
-
-  const handleSave = () => {
-
-    alert(
-      "✅ Perfil actualizado correctamente"
-    );
-
-    setEditing(false);
-  };
-
-  // ===============================
-  // LOGOUT
-  // ===============================
-
-  const handleLogout = () => {
-
-    logout();
-
-    navigate("/");
-  };
 
   return (
 
-    <>
-      <Navbar />
-
-      <div
-        className="
-          min-h-screen
-          bg-gray-100
-          p-6
-        "
-      >
-
-        {/* ===================================
-            HEADER
-        =================================== */}
-
-        <div
-          className="
-            bg-white
-            rounded-3xl
-            shadow-md
-            p-5
-            flex
-            justify-between
-            items-center
-            mb-8
-          "
-        >
-
-          {/* LEFT */}
-
-          <div
-            className="
-              flex
-              items-center
-              gap-5
-            "
-          >
-
-            {/* IMAGE */}
-
-            <img
-              src="https://images.unsplash.com/photo-1560250097-0b93528c311a"
-              alt="Administrador"
-              className="
-                w-20
-                h-20
-                rounded-full
-                object-cover
-                border-4
-                border-indigo-500
-                shadow-lg
-              "
-            />
-
-            {/* TEXT */}
-
-            <div>
-
-              <h1
-                className="
-                  text-5xl
-                  font-black
-                  text-gray-900
-                "
-              >
-                Panel Admin 👑
-              </h1>
-
-              <p
-                className="
-                  text-gray-500
-                  text-lg
-                "
-              >
-                Administración general del sistema
-              </p>
-
-            </div>
-
-          </div>
-
-          {/* RIGHT */}
-
-          <div
-            className="
-              flex
-              gap-4
-            "
-          >
-
-            <button
-              onClick={() =>
-                setEditing(!editing)
-              }
-              className="
-                bg-indigo-600
-                hover:bg-indigo-700
-                text-white
-                px-6
-                py-3
-                rounded-2xl
-                font-semibold
-                shadow-md
-                transition
-              "
-            >
-              ✏️ Editar perfil
-            </button>
-
-            <button
-              onClick={handleLogout}
-              className="
-                bg-red-500
-                hover:bg-red-600
-                text-white
-                px-6
-                py-3
-                rounded-2xl
-                font-semibold
-                shadow-md
-                transition
-              "
-            >
-              🔒 Cerrar sesión
-            </button>
-
-          </div>
-
-        </div>
-
-        {/* ===================================
-            MAIN CONTENT
-        =================================== */}
-
-        <div
-          className="
-            grid
-            grid-cols-1
-            lg:grid-cols-3
-            gap-8
-            items-start
-          "
-        >
-
-          {/* LEFT MENU */}
-
-          <div
-            className="
-              flex
-              flex-col
-              gap-6
-            "
-          >
-
-            {/* USERS */}
-
-            <button
-              onClick={() =>
-                navigate("/admin/users")
-              }
-              className="
-                bg-indigo-600
-                hover:bg-indigo-700
-                text-white
-                rounded-3xl
-                p-6
-                shadow-lg
-                transition
-                text-left
-              "
-            >
-
-              <div className="text-4xl mb-3">
-                👥
-              </div>
-
-              <h2
-                className="
-                  text-2xl
-                  font-bold
-                  mb-1
-                "
-              >
-                Gestionar usuarios
-              </h2>
-
-              <p className="text-indigo-100">
-                Administra compradores y vendedores
-              </p>
-
-            </button>
-
-            {/* STATS */}
-
-            <button
-              onClick={() =>
-                navigate("/admin/statistics")
-              }
-              className="
-                bg-green-600
-                hover:bg-green-700
-                text-white
-                rounded-3xl
-                p-6
-                shadow-lg
-                transition
-                text-left
-              "
-            >
-
-              <div className="text-4xl mb-3">
-                📊
-              </div>
-
-              <h2
-                className="
-                  text-2xl
-                  font-bold
-                  mb-1
-                "
-              >
-                Estadísticas
-              </h2>
-
-              <p className="text-green-100">
-                Visualiza reportes del ecommerce
-              </p>
-
-            </button>
-
-            {/* PRODUCTS */}
-
-            <button
-              onClick={() =>
-              navigate("/admin/products")
-              }
-              className="
-                bg-yellow-500
-                hover:bg-yellow-600
-                text-white
-                rounded-3xl
-                p-6
-                shadow-lg
-                transition
-                text-left
-              "
-            >
-
-              <div className="text-4xl mb-3">
-                📦
-              </div>
-
-              <h2
-                className="
-                  text-2xl
-                  font-bold
-                  mb-1
-                "
-              >
-                Productos
-              </h2>
-
-              <p className="text-yellow-100">
-                Gestiona productos del sistema
-              </p>
-
-            </button>
-
-            {/* REPORTS */}
-
-            <button
-              className="
-                bg-pink-500
-                hover:bg-pink-600
-                text-white
-                rounded-3xl
-                p-6
-                shadow-lg
-                transition
-                text-left
-              "
-            >
-
-              <div className="text-4xl mb-3">
-                📈
-              </div>
-
-              <h2
-                className="
-                  text-2xl
-                  font-bold
-                  mb-1
-                "
-              >
-                Reportes
-              </h2>
-
-              <p className="text-pink-100">
-                Revisión administrativa
-              </p>
-
-            </button>
-
-          </div>
-
-          {/* RIGHT IMAGE */}
-
-          <div
-            className="
-              lg:col-span-2
-              bg-white
-              rounded-3xl
-              shadow-lg
-              overflow-hidden
-              relative
-              min-h-[650px]
-            "
-          >
-
-            <img
-              src="https://images.unsplash.com/photo-1556740749-887f6717d7e4"
-              alt="Panel administrativo"
-              className="
-                w-full
-                h-full
-                object-cover
-              "
-            />
-
-            {/* OVERLAY */}
-
-            <div
-              className="
-                absolute
-                inset-0
-                bg-black/50
-                flex
-                flex-col
-                justify-center
-                items-center
-                text-center
-                p-10
-              "
-            >
-
-              <h1
-                className="
-                  text-5xl
-                  font-black
-                  text-white
-                  mb-6
-                "
-              >
-                Panel Administrativo 🚀
-              </h1>
-
-              <p
-                className="
-                  text-2xl
-                  text-gray-200
-                  max-w-3xl
-                  leading-relaxed
-                "
-              >
-                Controla usuarios,
-                estadísticas, ventas,
-                productos y toda la
-                administración del ecommerce
-                desde un solo lugar.
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* ===================================
-            EDIT PANEL
-        =================================== */}
-
-        {editing && (
-
-          <div
-            className="
-              bg-white
-              rounded-3xl
-              shadow-lg
-              p-8
-              mt-10
-              max-w-5xl
-              mx-auto
-            "
-          >
-
-            <h2
-              className="
-                text-3xl
-                font-bold
-                text-gray-900
-                mb-8
-              "
-            >
-              Información del administrador
-            </h2>
-
-            {/* GRID */}
-
-            <div
-              className="
-                grid
-                grid-cols-1
-                md:grid-cols-2
-                gap-6
-              "
-            >
-
-              {/* NAME */}
-
-              <div>
-
-                <label
-                  className="
-                    block
-                    text-gray-700
-                    font-semibold
-                    mb-2
-                  "
-                >
-                  Nombre
-                </label>
-
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) =>
-                    setName(
-                      e.target.value
-                    )
-                  }
-                  className="
-                    w-full
-                    border
-                    border-gray-300
-                    rounded-2xl
-                    px-4
-                    py-4
-                    outline-none
-                    focus:ring-2
-                    focus:ring-indigo-500
-                  "
-                />
-
-              </div>
-
-              {/* EMAIL */}
-
-              <div>
-
-                <label
-                  className="
-                    block
-                    text-gray-700
-                    font-semibold
-                    mb-2
-                  "
-                >
-                  Correo
-                </label>
-
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) =>
-                    setEmail(
-                      e.target.value
-                    )
-                  }
-                  className="
-                    w-full
-                    border
-                    border-gray-300
-                    rounded-2xl
-                    px-4
-                    py-4
-                    outline-none
-                    focus:ring-2
-                    focus:ring-indigo-500
-                  "
-                />
-
-              </div>
-
-              {/* PHONE */}
-
-              <div>
-
-                <label
-                  className="
-                    block
-                    text-gray-700
-                    font-semibold
-                    mb-2
-                  "
-                >
-                  Teléfono
-                </label>
-
-                <input
-                  type="text"
-                  value={phone}
-                  onChange={(e) =>
-                    setPhone(
-                      e.target.value
-                    )
-                  }
-                  className="
-                    w-full
-                    border
-                    border-gray-300
-                    rounded-2xl
-                    px-4
-                    py-4
-                    outline-none
-                    focus:ring-2
-                    focus:ring-indigo-500
-                  "
-                />
-
-              </div>
-
-              {/* ADDRESS */}
-
-              <div>
-
-                <label
-                  className="
-                    block
-                    text-gray-700
-                    font-semibold
-                    mb-2
-                  "
-                >
-                  Dirección
-                </label>
-
-                <input
-                  type="text"
-                  value={address}
-                  onChange={(e) =>
-                    setAddress(
-                      e.target.value
-                    )
-                  }
-                  className="
-                    w-full
-                    border
-                    border-gray-300
-                    rounded-2xl
-                    px-4
-                    py-4
-                    outline-none
-                    focus:ring-2
-                    focus:ring-indigo-500
-                  "
-                />
-
-              </div>
-
-            </div>
-
-            {/* PASSWORD */}
-
-            <div className="mt-6">
-
-              <label
-                className="
-                  block
-                  text-gray-700
-                  font-semibold
-                  mb-2
-                "
-              >
-                Nueva contraseña
-              </label>
-
-              <input
-                type="password"
-                value={password}
-                onChange={(e) =>
-                  setPassword(
-                    e.target.value
-                  )
-                }
-                placeholder="********"
-                className="
-                  w-full
-                  border
-                  border-gray-300
-                  rounded-2xl
-                  px-4
-                  py-4
-                  outline-none
-                  focus:ring-2
-                  focus:ring-indigo-500
-                "
-              />
-
-            </div>
-
-            {/* BUTTON */}
-
-            <button
-              onClick={handleSave}
-              className="
-                mt-8
-                bg-indigo-600
-                hover:bg-indigo-700
-                text-white
-                px-8
-                py-4
-                rounded-2xl
-                font-semibold
-                shadow-lg
-                transition
-              "
-            >
-              💾 Guardar cambios
-            </button>
-
-          </div>
-
-        )}
+  <div className="flex bg-slate-100 min-h-screen">
+
+    {/* SIDEBAR */}
+
+    <AdminSidebar />
+
+    {/* CONTENT */}
+
+    <div className="flex-1 p-6">
+
+      {/* TOP HEADER */}
+
+<div className="flex items-center justify-between mb-8">
+
+  {/* LEFT */}
+
+  <div>
+
+    <h1 className="text-4xl font-black text-slate-800">
+
+      Dashboard 👑
+
+    </h1>
+
+    <p className="text-gray-500 mt-1">
+
+      Bienvenido al panel administrativo de Bodegón Virtual
+
+    </p>
+
+  </div>
+
+  {/* RIGHT */}
+
+  <div className="flex items-center gap-4">
+
+    {/* SEARCH */}
+
+    <div className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center gap-3 w-[380px]">
+
+      <input
+        type="text"
+        placeholder="Buscar productos, pedidos, usuarios..."
+        className="outline-none w-full text-gray-700"
+      />
+
+      <span className="text-gray-400 text-xl">
+
+        🔍
+
+      </span>
+
+    </div>
+
+    {/* NOTIFICATION */}
+
+    <button className="bg-white w-12 h-12 rounded-2xl shadow-sm flex items-center justify-center text-xl hover:bg-slate-100 transition">
+
+      🔔
+
+    </button>
+
+    {/* USER */}
+
+    <div className="bg-white px-4 py-2 rounded-2xl shadow-sm flex items-center gap-3">
+
+      <img
+        src="https://i.pravatar.cc/100"
+        alt="admin"
+        className="w-10 h-10 rounded-full"
+      />
+
+      <div>
+
+        <p className="font-semibold text-slate-800">
+
+          Administrador
+
+        </p>
+
+        <span className="text-green-500 text-sm">
+
+          ● online
+
+        </span>
 
       </div>
-    </>
-  );
+
+    </div>
+
+  </div>
+
+</div>
+      
+
+      {/* STATS */}
+
+      <div className="grid grid-cols-4 gap-4 mb-6">
+
+        <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+
+  <div className="flex justify-between items-center">
+
+    <div>
+
+      <h2 className="text-gray-500">
+        Usuarios
+      </h2>
+
+      <p className="text-3xl font-black text-green-500">
+        1,250
+      </p>
+
+      <span className="text-green-500 text-sm">
+
+        ↑ 12.5%
+
+      </span>
+
+    </div>
+
+    <div className="bg-green-100 p-4 rounded-2xl text-3xl">
+
+      👥
+
+    </div>
+
+  </div>
+
+</div>
+
+        <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+
+  <div className="flex justify-between items-center">
+
+    <div>
+
+      <h2 className="text-gray-500">
+        Ventas
+      </h2>
+
+      <p className="text-3xl font-black text-green-500">
+        1,250
+      </p>
+
+      <span className="text-green-500 text-sm">
+
+        ↑ 12.5%
+
+      </span>
+
+    </div>
+
+    <div className="bg-green-100 p-4 rounded-2xl text-3xl">
+
+      👥
+
+    </div>
+
+  </div>
+
+</div>
+
+        <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+
+  <div className="flex justify-between items-center">
+
+    <div>
+
+      <h2 className="text-gray-500">
+        Productos
+      </h2>
+
+      <p className="text-3xl font-black text-green-500">
+        1,250
+      </p>
+
+      <span className="text-green-500 text-sm">
+
+        ↑ 12.5%
+
+      </span>
+
+    </div>
+
+    <div className="bg-green-100 p-4 rounded-2xl text-3xl">
+
+      👥
+
+    </div>
+
+  </div>
+
+</div>
+
+        <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+
+  <div className="flex justify-between items-center">
+
+    <div>
+
+      <h2 className="text-gray-500">
+        Pedidos
+      </h2>
+
+      <p className="text-3xl font-black text-green-500">
+        1,250
+      </p>
+
+      <span className="text-green-500 text-sm">
+
+        ↑ 12.5%
+
+      </span>
+
+    </div>
+
+    <div className="bg-green-100 p-4 rounded-2xl text-3xl">
+
+      👥
+
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+{/* MAIN */}
+      <div className="grid grid-cols-3 gap-5">
+
+        {/* GRAFICA */}
+
+        <div className="col-span-2 bg-white rounded-3xl p-6 shadow-sm">
+
+          <h2 className="text-2xl font-black mb-4">
+
+            Ventas últimos 6 meses
+
+          </h2>
+
+          <div className="h-72">
+
+  <ResponsiveContainer width="100%" height="100%">
+
+    <AreaChart data={salesData}>
+
+      <defs>
+
+        <linearGradient id="colorVentas" x1="0" y1="0" x2="0" y2="1">
+
+          <stop offset="5%" stopColor="#22c55e" stopOpacity={0.4} />
+
+          <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+
+        </linearGradient>
+
+      </defs>
+
+      <CartesianGrid strokeDasharray="3 3" />
+
+      <XAxis dataKey="month" />
+
+      <YAxis />
+
+      <Tooltip />
+
+      <Area
+        type="monotone"
+        dataKey="ventas"
+        stroke="#22c55e"
+        fillOpacity={1}
+        fill="url(#colorVentas)"
+        strokeWidth={4}
+      />
+
+    </AreaChart>
+
+  </ResponsiveContainer>
+
+</div>
+          
+
+        </div>
+
+ {/* ACTIVIDAD */}
+
+<div className="bg-white rounded-3xl p-6 shadow-sm">
+
+  <h2 className="text-2xl font-black mb-5">
+
+    Actividad reciente
+
+  </h2>
+
+  <div className="space-y-4">
+
+    <div className="border-b pb-3">
+
+      <p className="font-semibold">
+        Nuevo usuario registrado
+      </p>
+
+      <span className="text-gray-400 text-sm">
+        Hace 5 min
+      </span>
+
+    </div>
+
+    <div className="border-b pb-3">
+
+      <p className="font-semibold">
+        Pedido realizado
+      </p>
+
+      <span className="text-gray-400 text-sm">
+        Hace 20 min
+      </span>
+
+    </div>
+
+    <div className="border-b pb-3">
+
+      <p className="font-semibold">
+        Producto actualizado
+      </p>
+
+      <span className="text-gray-400 text-sm">
+        Hace 1 hora
+      </span>
+
+    </div>
+
+  </div>
+
+</div>
+
+</div>
+
+{/* PRODUCTOS RECIENTES */}
+
+<div className="bg-white rounded-3xl p-6 shadow-sm mt-6">
+
+  <div className="flex items-center justify-between mb-6">
+
+    <div>
+
+      <h2 className="text-2xl font-black text-slate-800">
+
+        Productos recientes
+
+      </h2>
+
+      <p className="text-gray-500 text-sm">
+
+        Productos agregados al ecommerce
+
+      </p>
+
+    </div>
+
+    <button className="bg-slate-100 hover:bg-slate-200 transition px-4 py-2 rounded-xl text-sm font-semibold">
+
+      Ver todos
+
+    </button>
+
+  </div>
+
+  {/* TABLE */}
+
+  <div className="overflow-hidden rounded-2xl border border-gray-100">
+
+    {/* HEADER */}
+
+    <div className="grid grid-cols-5 bg-slate-100 p-4 font-semibold text-slate-700">
+
+      <p>Producto</p>
+      <p>Categoría</p>
+      <p>Precio</p>
+      <p>Stock</p>
+      <p>Estado</p>
+
+    </div>
+
+    {/* ROW 1 */}
+
+    <div className="grid grid-cols-5 p-4 items-center border-t border-gray-100 hover:bg-slate-50 transition">
+
+      <div className="flex items-center gap-3">
+
+        <img
+          src="https://images.unsplash.com/photo-1542291026-7eec264c27ff"
+          alt="producto"
+          className="w-12 h-12 rounded-xl object-cover"
+        />
+
+        <p className="font-semibold">
+
+          Nike Air Max
+
+        </p>
+
+      </div>
+
+      <p>Calzado</p>
+
+      <p className="font-semibold">
+
+        $450.000
+
+      </p>
+
+      <p>45</p>
+
+      <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full w-fit text-sm font-semibold">
+
+        Activo
+
+      </span>
+
+    </div>
+
+    {/* ROW 2 */}
+
+    <div className="grid grid-cols-5 p-4 items-center border-t border-gray-100 hover:bg-slate-50 transition">
+
+      <div className="flex items-center gap-3">
+
+        <img
+          src="https://images.unsplash.com/photo-1523275335684-37898b6baf30"
+          alt="producto"
+          className="w-12 h-12 rounded-xl object-cover"
+        />
+
+        <p className="font-semibold">
+
+          Apple Watch
+
+        </p>
+
+      </div>
+
+      <p>Tecnología</p>
+
+      <p className="font-semibold">
+
+        $1.200.000
+
+      </p>
+
+      <p>18</p>
+
+      <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full w-fit text-sm font-semibold">
+
+        Activo
+
+      </span>
+
+    </div>
+
+    {/* ROW 3 */}
+
+    <div className="grid grid-cols-5 p-4 items-center border-t border-gray-100 hover:bg-slate-50 transition">
+
+      <div className="flex items-center gap-3">
+
+        <img
+          src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e"
+          alt="producto"
+          className="w-12 h-12 rounded-xl object-cover"
+        />
+
+        <p className="font-semibold">
+
+          Audífonos Sony
+
+        </p>
+
+      </div>
+
+      <p>Audio</p>
+
+      <p className="font-semibold">
+
+        $320.000
+
+      </p>
+
+      <p>27</p>
+
+      <span className="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full w-fit text-sm font-semibold">
+
+        Bajo stock
+
+      </span>
+
+    </div>
+
+  </div>
+
+</div>
+
+    </div>
+
+  </div>
+
+);
+
 }

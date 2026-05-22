@@ -1,10 +1,12 @@
 import { useState } from "react";
 
+
 import {
   useNavigate
 } from "react-router-dom";
 
 import Navbar from "../../components/Navbar";
+import BuyerSidebar from "./BuyerSidebar";
 
 import {
   useAuth
@@ -29,6 +31,10 @@ export default function BuyerProfile() {
   const [editing, setEditing] =
     useState(false);
 
+    
+
+  const [activeSection, setActiveSection] =
+  useState("dashboard");
 
   // ===============================
   // FORM DATA
@@ -86,13 +92,19 @@ export default function BuyerProfile() {
     <>
       <Navbar />
 
-      <div
-        className="
-          min-h-screen
-          bg-gray-100
-          p-6
-        "
-      >
+      <div className="flex bg-slate-100 min-h-screen">
+
+  <BuyerSidebar
+    activeSection={activeSection}
+    setActiveSection={setActiveSection}
+  />
+
+  <div
+    className="
+      flex-1
+      p-6
+    "
+  >
 
         {/* ===================================
             HEADER
@@ -719,6 +731,7 @@ export default function BuyerProfile() {
         )}
 
       </div>
+    </div>
     </>
   );
 }

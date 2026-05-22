@@ -1,18 +1,39 @@
+import { useEffect, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
 
-  const navigate =
-    useNavigate();
+  const navigate = useNavigate();
 
-  const role =
-    localStorage.getItem("role");
+  const [role, setRole] = useState("");
+
+  // =====================================
+  // LOAD ROLE
+  // =====================================
+
+  useEffect(() => {
+
+    const savedRole =
+      localStorage.getItem("role");
+
+    setRole(savedRole || "");
+
+  }, []);
+
+  // =====================================
+  // LOGOUT
+  // =====================================
 
   const logout = () => {
 
     localStorage.clear();
 
-    navigate("/");
+    setRole("");
+
+    navigate("/login");
+
+    window.location.reload();
   };
 
   // =====================================
@@ -38,7 +59,7 @@ export default function Navbar() {
           marginRight: "20px",
         }}
       >
-        Rol: {role}
+        Rol: {role || "INVITADO"}
       </span>
 
       {role === "ADMIN" && (
@@ -63,14 +84,18 @@ export default function Navbar() {
         </button>
       )}
 
-      <button
-        onClick={logout}
-        style={{
-          marginLeft: "20px",
-        }}
-      >
-        Logout
-      </button>
+      {role && (
+
+        <button
+          onClick={logout}
+          style={{
+            marginLeft: "20px",
+          }}
+        >
+          Logout
+        </button>
+
+      )}
 
     </div>
   );
