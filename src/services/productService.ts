@@ -123,3 +123,19 @@ export const searchProducts = async (
 
   return response.data;
 };
+
+
+// ===============================
+// PRODUCTS BY CATEGORY
+// ===============================
+
+export const getProductsByCategory = async (
+  categoryId: string
+) => {
+
+  const response = await api.get(
+    `/products/category/${categoryId}`
+  );
+
+  return response.data;
+};

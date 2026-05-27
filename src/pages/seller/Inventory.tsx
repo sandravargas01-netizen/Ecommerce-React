@@ -7,200 +7,233 @@ import {
   useNavigate
 } from "react-router-dom";
 
-import Navbar from "../../components/Navbar";
+import SellerSidebar from "./SellerSidebar";
 
-import mockProducts from "../../moks/mockProducts";
+import {
+  getProducts,
+  deleteProduct,
+  searchProducts,
+  getProductsByCategory
+} from "../../services/productService";
+
+import {
+  getCategories
+} from "../../services/categoryService";
 
 export default function Inventory() {
 
   const navigate =
     useNavigate();
 
-  // ===============================
-  // PRODUCTS
-  // ===============================
+  // =====================================
+  // STATES
+  // =====================================
 
   const [products, setProducts] =
     useState<any[]>([]);
 
-  // ===============================
-  // SEARCH
-  // ===============================
+  const [categories, setCategories] =
+    useState<any[]>([]);
 
   const [search, setSearch] =
     useState("");
-
-  // ===============================
-  // CATEGORY
-  // ===============================
 
   const [
     selectedCategory,
     setSelectedCategory
   ] = useState("Todos");
 
-  // ===============================
-  // LOAD PRODUCTS
-  // ===============================
+  // =====================================
+  // LOAD DATA
+  // =====================================
 
   useEffect(() => {
 
-    // LOCAL PRODUCTS
-
-    const localProducts =
-      localStorage.getItem(
-        "products"
-      );
-
-    const savedProducts =
-      localProducts
-        ? JSON.parse(localProducts)
-        : [];
-
-    // COMBINE PRODUCTS
-
-    setProducts([
-      ...mockProducts,
-      ...savedProducts,
-    ]);
+    loadProducts();
+    loadCategories();
 
   }, []);
 
-  // ===============================
-  // CATEGORIES
-  // ===============================
+  // =====================================
+  // LOAD PRODUCTS
+  // =====================================
 
-  const categories = [
-    "Todos",
-    "Damas",
-    "Caballeros",
-    "Niños",
-    "Zapatos",
-    "Accesorios",
-  ];
+  const loadProducts =
+    async () => {
 
-  // ===============================
-  // FILTER PRODUCTS
-  // ===============================
+      try {
 
-  const filteredProducts =
-    products.filter((product) => {
+        const response =
+          await getProducts();
 
-      const matchSearch =
-        product.name
-          ?.toLowerCase()
-          .includes(
-            search.toLowerCase()
+        setProducts(
+          response.data || response
+        );
+
+      } catch (error) {
+
+        console.log(error);
+      }
+    };
+
+  // =====================================
+  // LOAD CATEGORIES
+  // =====================================
+
+  const loadCategories =
+    async () => {
+
+      try {
+
+        const response =
+          await getCategories();
+
+        setCategories(
+          response.data || response
+        );
+
+      } catch (error) {
+
+        console.log(error);
+      }
+    };
+
+  // =====================================
+  // SEARCH PRODUCTS
+  // =====================================
+
+  const handleSearch =
+    async (
+      value: string
+    ) => {
+
+      setSearch(value);
+
+      if (!value) {
+
+        loadProducts();
+
+        return;
+      }
+
+      try {
+
+        const response =
+          await searchProducts(
+            value
           );
 
-      const matchCategory =
+        setProducts(
+          response.data || response
+        );
 
-        selectedCategory ===
+      } catch (error) {
+
+        console.log(error);
+      }
+    };
+
+  // =====================================
+  // FILTER CATEGORY
+  // =====================================
+
+  const handleCategory =
+    async (
+      categoryId: string
+    ) => {
+
+      setSelectedCategory(
+        categoryId
+      );
+
+      if (
+        categoryId ===
         "Todos"
+      ) {
 
-        ||
+        loadProducts();
 
-        product.category ===
-        selectedCategory;
+        return;
+      }
 
-      return (
-        matchSearch &&
-        matchCategory
-      );
-    });
+      try {
 
-  // ===============================
+        const response =
+          await getProductsByCategory(
+            categoryId
+          );
+
+        setProducts(
+          response.data || response
+        );
+
+      } catch (error) {
+
+        console.log(error);
+      }
+    };
+
+  // =====================================
   // DELETE PRODUCT
-  // ===============================
+  // =====================================
 
-  const handleDelete = (
-    id: number
-  ) => {
+  const handleDelete =
+    async (
+      id: string
+    ) => {
 
-    const confirmDelete =
-      window.confirm(
-        "¿Eliminar producto?"
-      );
+      const confirmDelete =
+        window.confirm(
+          "¿Eliminar producto?"
+        );
 
-    if (!confirmDelete) return;
+      if (!confirmDelete)
+        return;
 
-    // REMOVE ONLY LOCAL PRODUCTS
+      try {
 
-    const localProducts =
-      localStorage.getItem(
-        "products"
-      );
+        await deleteProduct(id);
 
-    const savedProducts =
-      localProducts
-        ? JSON.parse(localProducts)
-        : [];
+        alert(
+          "✅ Producto eliminado"
+        );
 
-    const updatedProducts =
-      savedProducts.filter(
-        (product: any) =>
-          product.id !== id
-      );
+        loadProducts();
 
-    // SAVE
+      } catch (error) {
 
-    localStorage.setItem(
-      "products",
-      JSON.stringify(
-        updatedProducts
-      )
-    );
+        console.log(error);
 
-    // UPDATE SCREEN
-
-    setProducts([
-      ...mockProducts,
-      ...updatedProducts,
-    ]);
-  };
+        alert(
+          "❌ Error eliminando producto"
+        );
+      }
+    };
 
   return (
 
-    <div
-      className="
-        min-h-screen
-        bg-gray-100
+    <div className="
+      flex
+      min-h-screen
+      bg-gray-100
+    ">
+
+      {/* SIDEBAR */}
+
+      <SellerSidebar
+        activeSection="products"
+      />
+
+      {/* CONTENT */}
+
+      <div className="
+        flex-1
         p-6
-      "
-    >
+      ">
 
-      <Navbar />
+        {/* HEADER */}
 
-      {/* =====================================
-          BACK BUTTON
-      ===================================== */}
-
-      <button
-        onClick={() =>
-          navigate("/seller-profile")
-        }
-        className="
-          mb-6
-          bg-gray-800
-          hover:bg-gray-900
-          text-white
-          px-6
-          py-3
-          rounded-2xl
-          font-bold
-          shadow-md
-          transition
-        "
-      >
-        ← Volver
-      </button>
-
-      {/* =====================================
-          HEADER
-      ===================================== */}
-
-      <div
-        className="
+        <div className="
           bg-white
           rounded-3xl
           shadow-md
@@ -208,101 +241,129 @@ export default function Inventory() {
           mb-8
           overflow-hidden
           relative
-        "
-      >
+        ">
 
-        <img
-          src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b"
-          alt="Bodegón Virtual"
-          className="
-            absolute
-            inset-0
-            w-full
-            h-full
-            object-cover
-            opacity-20
-          "
-        />
-
-        <div className="relative z-10">
-
-          <h1
+          <img
+            src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b"
+            alt="Inventory"
             className="
+              absolute
+              inset-0
+              w-full
+              h-full
+              object-cover
+              opacity-20
+            "
+          />
+
+          <div className="
+            relative
+            z-10
+          ">
+
+            <h1 className="
               text-5xl
               font-black
               text-gray-900
               mb-3
-            "
-          >
-            Inventario Seller 📦
-          </h1>
+            ">
+              Inventario Seller 📦
+            </h1>
 
-          <p
-            className="
+            <p className="
               text-xl
               text-gray-700
-            "
-          >
-            Gestiona los productos de
-            Bodegón Virtual
-          </p>
+            ">
+              Gestiona los productos
+              de tu tienda
+            </p>
+
+          </div>
 
         </div>
 
-      </div>
-
-      {/* =====================================
-          SEARCH + FILTERS
-      ===================================== */}
-
-      <div className="
-        bg-white
-        rounded-3xl
-        shadow-md
-        p-6
-        mb-8
-      ">
-
-        {/* SEARCH */}
-
-        <input
-          type="text"
-          placeholder="Buscar productos..."
-          value={search}
-          onChange={(e) =>
-            setSearch(
-              e.target.value
-            )
-          }
-          className="
-            w-full
-            border
-            rounded-2xl
-            p-4
-            mb-6
-            outline-none
-            focus:ring-4
-            focus:ring-indigo-300
-          "
-        />
-
-        {/* CATEGORIES */}
+        {/* SEARCH + FILTERS */}
 
         <div className="
-          flex
-          gap-3
-          flex-wrap
+          bg-white
+          rounded-3xl
+          shadow-md
+          p-6
+          mb-8
         ">
 
-          {
-            categories.map(
-              (category) => (
+          {/* SEARCH */}
+
+          <input
+            type="text"
+            placeholder="Buscar productos..."
+            value={search}
+            onChange={(e) =>
+              handleSearch(
+                e.target.value
+              )
+            }
+            className="
+              w-full
+              border
+              rounded-2xl
+              p-4
+              mb-6
+              outline-none
+              focus:ring-4
+              focus:ring-indigo-300
+            "
+          />
+
+          {/* CATEGORY FILTER */}
+
+          <div className="
+            flex
+            gap-3
+            flex-wrap
+          ">
+
+            <button
+              onClick={() =>
+                handleCategory(
+                  "Todos"
+                )
+              }
+              className={`
+                px-5
+                py-2
+                rounded-2xl
+                font-bold
+                transition
+
+                ${
+                  selectedCategory ===
+                  "Todos"
+
+                  ? `
+                    bg-indigo-600
+                    text-white
+                  `
+
+                  : `
+                    bg-gray-200
+                    text-gray-700
+                  `
+                }
+              `}
+            >
+              Todos
+            </button>
+
+            {
+              categories.map(
+                (category: any) => (
 
                 <button
-                  key={category}
+                  key={category.id}
                   onClick={() =>
-                    setSelectedCategory(
-                      category
+                    handleCategory(
+                      category.id
                     )
                   }
                   className={`
@@ -314,7 +375,7 @@ export default function Inventory() {
 
                     ${
                       selectedCategory ===
-                      category
+                      category.id
 
                       ? `
                         bg-indigo-600
@@ -329,291 +390,190 @@ export default function Inventory() {
                   `}
                 >
 
-                  {category}
+                  {category.name}
 
                 </button>
-              )
-            )
-          }
+
+              ))
+            }
+
+          </div>
 
         </div>
 
-      </div>
+        {/* CREATE BUTTON */}
 
-      {/* =====================================
-          CREATE BUTTON
-      ===================================== */}
-
-      <div
-        className="
+        <div className="
           flex
           justify-end
           mb-8
-        "
-      >
+        ">
 
-        <button
-          onClick={() =>
-            navigate(
-              "/seller/create-product"
-            )
-          }
-          className="
-            bg-indigo-600
-            hover:bg-indigo-700
-            text-white
-            px-8
-            py-4
-            rounded-2xl
-            font-bold
-            shadow-lg
-            transition
-          "
-        >
-          ➕ Crear producto
-        </button>
-
-      </div>
-
-      {/* =====================================
-          EMPTY
-      ===================================== */}
-
-      {filteredProducts.length === 0 && (
-
-        <div
-          className="
-            bg-white
-            rounded-3xl
-            shadow-md
-            p-16
-            text-center
-          "
-        >
-
-          <h2
+          <button
+            onClick={() =>
+              navigate(
+                "/seller/create-product"
+              )
+            }
             className="
-              text-4xl
-              font-black
-              mb-4
+              bg-indigo-600
+              hover:bg-indigo-700
+              text-white
+              px-8
+              py-4
+              rounded-2xl
+              font-bold
+              shadow-lg
+              transition
             "
           >
-            No hay productos 😢
-          </h2>
-
-          <p
-            className="
-              text-gray-500
-              text-lg
-            "
-          >
-            Empieza creando productos
-            para tu tienda.
-          </p>
+            ➕ Crear producto
+          </button>
 
         </div>
-      )}
 
-      {/* =====================================
-          PRODUCTS
-      ===================================== */}
+        {/* PRODUCTS */}
 
-      <div
-        className="
+        <div className="
           grid
           grid-cols-1
           md:grid-cols-2
           lg:grid-cols-3
           gap-8
-        "
-      >
+        ">
 
-        {filteredProducts.map((product) => (
-
-          <div
-            key={product.id}
-            className="
-              bg-white
-              rounded-3xl
-              shadow-lg
-              overflow-hidden
-              transition
-              hover:scale-105
-              duration-300
-            "
-          >
-
-            {/* IMAGE */}
-
-            <img
-              src={
-                product.imageUrl ||
-                product.image
-              }
-              alt={product.name}
-              className="
-                w-full
-                h-72
-                object-cover
-              "
-            />
-
-            {/* CONTENT */}
-
-            <div className="p-6">
-
-              {/* CATEGORY */}
-
-              <span
-                className="
-                  bg-indigo-100
-                  text-indigo-700
-                  px-4
-                  py-1
-                  rounded-full
-                  text-sm
-                  font-semibold
-                "
-              >
-                {
-                  product.category
-                }
-              </span>
-
-              {/* NAME */}
-
-              <h2
-                className="
-                  text-3xl
-                  font-black
-                  mt-4
-                  mb-2
-                "
-              >
-                {product.name}
-              </h2>
-
-              {/* DESCRIPTION */}
-
-              <p
-                className="
-                  text-gray-500
-                  mb-4
-                "
-              >
-                {product.description}
-              </p>
-
-              {/* SIZE */}
-
-              {
-                product.size && (
-
-                  <div className="
-                    mb-4
-                  ">
-
-                    <span
-                      className="
-                        bg-gray-200
-                        px-3
-                        py-1
-                        rounded-full
-                        text-sm
-                        font-semibold
-                      "
-                    >
-                      Talla:
-                      {" "}
-                      {product.size}
-                    </span>
-
-                  </div>
-                )
-              }
-
-              {/* PRICE */}
-
-              <h3
-                className="
-                  text-4xl
-                  font-black
-                  text-indigo-600
-                  mb-3
-                "
-              >
-                ${product.price}
-              </h3>
-
-              {/* STOCK */}
-
-              <p
-                className="
-                  text-gray-600
-                  mb-6
-                "
-              >
-                Stock:
-                {" "}
-                {product.stock}
-              </p>
-
-              {/* BUTTONS */}
+          {
+            products.map(
+              (product: any) => (
 
               <div
+                key={product.id}
                 className="
-                  flex
-                  gap-3
+                  bg-white
+                  rounded-3xl
+                  shadow-lg
+                  overflow-hidden
                 "
               >
 
-                <button
-                  onClick={() =>
-                    navigate(
-                      `/seller/edit-product/${product.id}`
-                    )
-                  }
-                  className="
-                    flex-1
-                    bg-yellow-500
-                    hover:bg-yellow-600
-                    text-white
-                    py-3
-                    rounded-2xl
-                    font-bold
-                    transition
-                  "
-                >
-                  ✏️ Editar
-                </button>
+                {/* IMAGE */}
 
-                <button
-                  onClick={() =>
-                    handleDelete(
-                      product.id
-                    )
+                <img
+                  src={
+                    product.imageUrl ||
+                    "https://images.unsplash.com/photo-1523275335684-37898b6baf30"
                   }
+                  alt={product.name}
                   className="
-                    flex-1
-                    bg-red-500
-                    hover:bg-red-600
-                    text-white
-                    py-3
-                    rounded-2xl
-                    font-bold
-                    transition
+                    w-full
+                    h-72
+                    object-cover
                   "
-                >
-                  🗑 Eliminar
-                </button>
+                />
+
+                {/* CONTENT */}
+
+                <div className="p-6">
+
+                  <span className="
+                    bg-indigo-100
+                    text-indigo-700
+                    px-4
+                    py-1
+                    rounded-full
+                    text-sm
+                    font-semibold
+                  ">
+                    {
+                      product.categoryName
+                      || "Categoría"
+                    }
+                  </span>
+
+                  <h2 className="
+                    text-3xl
+                    font-black
+                    mt-4
+                    mb-2
+                  ">
+                    {product.name}
+                  </h2>
+
+                  <p className="
+                    text-gray-500
+                    mb-4
+                  ">
+                    {product.description}
+                  </p>
+
+                  <h3 className="
+                    text-4xl
+                    font-black
+                    text-indigo-600
+                    mb-3
+                  ">
+                    ${product.price}
+                  </h3>
+
+                  <p className="
+                    text-gray-600
+                    mb-6
+                  ">
+                    Stock: {product.stock}
+                  </p>
+
+                  {/* BUTTONS */}
+
+                  <div className="
+                    flex
+                    gap-3
+                  ">
+
+                    <button
+                      className="
+                        flex-1
+                        bg-yellow-500
+                        hover:bg-yellow-600
+                        text-white
+                        py-3
+                        rounded-2xl
+                        font-bold
+                        transition
+                      "
+                    >
+                      ✏️ Editar
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        handleDelete(
+                          product.id
+                        )
+                      }
+                      className="
+                        flex-1
+                        bg-red-500
+                        hover:bg-red-600
+                        text-white
+                        py-3
+                        rounded-2xl
+                        font-bold
+                        transition
+                      "
+                    >
+                      🗑 Eliminar
+                    </button>
+
+                  </div>
+
+                </div>
 
               </div>
 
-            </div>
+            ))
+          }
 
-          </div>
-
-        ))}
+        </div>
 
       </div>
 

@@ -6,19 +6,20 @@ import {
   LogOut,
 } from "lucide-react";
 
+import {
+  useNavigate
+} from "react-router-dom";
+
 interface SellerSidebarProps {
   activeSection?: string;
-  setActiveSection?: any;
-  sellerData?: { name?: string; email?: string; store?: string };
-  onEditProfile?: () => void;
 }
 
 export default function SellerSidebar({
   activeSection,
-  setActiveSection,
-  sellerData,
-  onEditProfile,
 }: SellerSidebarProps) {
+
+  const navigate =
+    useNavigate();
 
   return (
 
@@ -46,18 +47,14 @@ export default function SellerSidebar({
             font-black
             text-green-400
           ">
-
             Ecommerce
-
           </h1>
 
           <p className="
             text-gray-300
             mt-1
           ">
-
             Panel Seller
-
           </p>
 
         </div>
@@ -70,7 +67,9 @@ export default function SellerSidebar({
 
           <button
             onClick={() =>
-              setActiveSection("dashboard")
+              navigate(
+                "/seller-profile"
+              )
             }
             className={`
               w-full
@@ -99,7 +98,9 @@ export default function SellerSidebar({
 
           <button
             onClick={() =>
-              setActiveSection("products")
+              navigate(
+                "/seller/inventory"
+              )
             }
             className={`
               w-full
@@ -127,7 +128,9 @@ export default function SellerSidebar({
 
           <button
             onClick={() =>
-              setActiveSection("orders")
+              navigate(
+                "/seller/orders"
+              )
             }
             className={`
               w-full
@@ -155,7 +158,9 @@ export default function SellerSidebar({
 
           <button
             onClick={() =>
-              setActiveSection("profile")
+              navigate(
+                "/seller-profile"
+              )
             }
             className={`
               w-full
@@ -179,23 +184,6 @@ export default function SellerSidebar({
 
           </button>
 
-        </div>
-
-        {/* PROFILE SUMMARY */}
-
-        <div className="bg-slate-900 rounded-2xl p-4 border border-slate-800 mb-6">
-          <h3 className="text-sm font-black text-gray-300 mb-3 uppercase tracking-wide">Mi Perfil</h3>
-          <div className="space-y-2 text-xs text-gray-400 mb-4">
-            <p><strong className="text-gray-200">Nombre:</strong><br />{sellerData?.name || "Sin nombre"}</p>
-            <p><strong className="text-gray-200">Correo:</strong><br />{sellerData?.email || "Sin correo"}</p>
-            <p><strong className="text-gray-200">Tienda:</strong><br />{sellerData?.store || "Sin tienda"}</p>
-          </div>
-          <button
-            onClick={onEditProfile}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 transition text-white text-sm font-semibold p-2 rounded-xl"
-          >
-            ✏️ Editar perfil
-          </button>
         </div>
 
       </div>
@@ -228,6 +216,7 @@ export default function SellerSidebar({
       </button>
 
     </div>
+
   );
 
 }

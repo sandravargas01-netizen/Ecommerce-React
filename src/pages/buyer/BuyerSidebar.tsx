@@ -21,7 +21,8 @@ export default function BuyerSidebar({
 
 }: BuyerSidebarProps) {
 
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   return (
 
@@ -49,15 +50,14 @@ export default function BuyerSidebar({
             font-black
             text-indigo-400
           ">
-
             Ecommerce
-
           </h1>
 
-          <p className="text-gray-400 mt-1">
-
+          <p className="
+            text-gray-400
+            mt-1
+          ">
             Panel Buyer
-
           </p>
 
         </div>
@@ -69,9 +69,17 @@ export default function BuyerSidebar({
           {/* DASHBOARD */}
 
           <button
-            onClick={() =>
-              setActiveSection("dashboard")
-            }
+            onClick={() => {
+
+              setActiveSection(
+                "dashboard"
+              );
+
+              navigate(
+                "/buyer/profile"
+              );
+
+            }}
             className={`
               w-full
               flex
@@ -80,6 +88,7 @@ export default function BuyerSidebar({
               p-4
               rounded-2xl
               transition
+
               ${
                 activeSection === "dashboard"
                   ? "bg-indigo-600"
@@ -98,7 +107,9 @@ export default function BuyerSidebar({
 
           <button
             onClick={() =>
-              navigate("/buyer/products")
+              navigate(
+                "/buyer/products"
+              )
             }
             className="
               w-full
@@ -122,7 +133,9 @@ export default function BuyerSidebar({
 
           <button
             onClick={() =>
-              navigate("/buyer/cart")
+              navigate(
+                "/buyer/cart"
+              )
             }
             className="
               w-full
@@ -146,7 +159,9 @@ export default function BuyerSidebar({
 
           <button
             onClick={() =>
-              navigate("/buyer/orders")
+              navigate(
+                "/buyer/orders"
+              )
             }
             className="
               w-full
@@ -170,7 +185,9 @@ export default function BuyerSidebar({
 
           <button
             onClick={() =>
-              setActiveSection("wishlist")
+              setActiveSection(
+                "wishlist"
+              )
             }
             className={`
               w-full
@@ -180,6 +197,7 @@ export default function BuyerSidebar({
               p-4
               rounded-2xl
               transition
+
               ${
                 activeSection === "wishlist"
                   ? "bg-indigo-600"
@@ -197,9 +215,17 @@ export default function BuyerSidebar({
           {/* PERFIL */}
 
           <button
-            onClick={() =>
-              setActiveSection("profile")
-            }
+            onClick={() => {
+
+              setActiveSection(
+                "profile"
+              );
+
+              navigate(
+                "/buyer/profile"
+              );
+
+            }}
             className={`
               w-full
               flex
@@ -208,6 +234,7 @@ export default function BuyerSidebar({
               p-4
               rounded-2xl
               transition
+
               ${
                 activeSection === "profile"
                   ? "bg-indigo-600"

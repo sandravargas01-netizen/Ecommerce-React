@@ -1,81 +1,111 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import {
-  useNavigate
-} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+import SellerSidebar from "./SellerSidebar";
 
 import {
   createProduct
 } from "../../services/productService";
+
+import {
+  getCategories
+} from "../../services/categoryService";
 
 export default function CreateProduct() {
 
   const navigate =
     useNavigate();
 
-  // ============================
+  // =====================================
   // LOADING
-  // ============================
+  // =====================================
 
   const [loading, setLoading] =
     useState(false);
 
-  // ============================
-  // FORM
-  // ============================
+  // =====================================
+  // CATEGORIES
+  // =====================================
+
+  const [categories, setCategories] =
+    useState<any[]>([]);
+
+  // =====================================
+  // PRODUCT FORM
+  // =====================================
 
   const [product, setProduct] =
-    useState<any>({
+    useState({
       name: "",
       description: "",
-      category: "Damas",
-      size: "M",
-      gender: "Mujer",
+      categoryId: "",
       price: "",
       stock: "",
-      imageUrl: "",
     });
 
-  // ============================
-  // CREATE PRODUCT
-  // ============================
+  // =====================================
+  // LOAD CATEGORIES
+  // =====================================
+
+  useEffect(() => {
+
+    loadCategories();
+
+  }, []);
+
+  const loadCategories =
+    async () => {
+
+      try {
+
+        const response =
+          await getCategories();
+
+        setCategories(
+          response.data || response
+        );
+
+      } catch (error) {
+
+        console.log(error);
+      }
+    };
+
+  // =====================================
+  // HANDLE CREATE PRODUCT
+  // =====================================
 
   const handleCreate =
     async () => {
+
+      // VALIDATION
+
+      if (
+        !product.name ||
+        !product.description ||
+        !product.categoryId ||
+        !product.price ||
+        !product.stock
+      ) {
+
+        alert(
+          "⚠️ Completa todos los campos"
+        );
+
+        return;
+      }
 
       try {
 
         setLoading(true);
 
-        // ============================
-        // CATEGORY IMAGES
-        // ============================
-
-        const images: any = {
-
-          Damas:
-            "https://images.unsplash.com/photo-1483985988355-763728e1935b",
-
-          Caballeros:
-            "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f",
-
-          Niños:
-            "https://images.unsplash.com/photo-1519238359922-989348752efb",
-
-          Zapatos:
-            "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-
-          Accesorios:
-            "https://images.unsplash.com/photo-1523170335258-f5ed11844a49",
-        };
-
-        // ============================
-        // BODY
-        // ============================
-
         const body = {
 
-          categoryId: 1,
+          categoryId:
+            Number(
+              product.categoryId
+            ),
 
           name:
             product.name,
@@ -83,27 +113,18 @@ export default function CreateProduct() {
           description:
             product.description,
 
-          category:
-            product.category,
+          price:
+            Number(
+              product.price
+            ),
 
-          size:
-            product.size,
-
-          gender:
-            product.gender,
-
-          price: Number(
-            product.price
-          ),
-
-          stock: Number(
-            product.stock
-          ),
+          stock:
+            Number(
+              product.stock
+            ),
 
           imageUrl:
-            images[
-              product.category
-            ],
+            "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
 
           brand:
             "Bodegón Virtual",
@@ -114,61 +135,17 @@ export default function CreateProduct() {
           color:
             "Negro",
 
-          weight: 1,
+          weight:
+            1,
         };
 
-        console.log(
-          "PRODUCT:",
-          body
-        );
-
-        // ============================
-        // API
-        // ============================
+        console.log(body);
 
         await createProduct(body);
-
-        // ============================
-        // LOCAL STORAGE
-        // ============================
-
-        const savedProducts =
-          localStorage.getItem(
-            "products"
-          );
-
-        const products =
-          savedProducts
-            ? JSON.parse(
-                savedProducts
-              )
-            : [];
-
-        const newProduct = {
-          id: Date.now(),
-          ...body,
-          image:
-            body.imageUrl,
-        };
-
-        products.push(
-          newProduct
-        );
-
-        localStorage.setItem(
-          "products",
-          JSON.stringify(
-            products
-          )
-        );
 
         alert(
           "✅ Producto creado correctamente"
         );
-
-        // ============================
-        // REDIRECT
-        // ============================
 
         navigate(
           "/seller/inventory"
@@ -176,10 +153,10 @@ export default function CreateProduct() {
 
       } catch (error) {
 
-        console.error(error);
+        console.log(error);
 
         alert(
-          "❌ Error creando producto"
+          "❌ Error al crear producto"
         );
 
       } finally {
@@ -191,251 +168,300 @@ export default function CreateProduct() {
   return (
 
     <div className="
+      flex
       min-h-screen
       bg-gray-100
-      p-8
     ">
 
-      {/* HEADER */}
+      {/* SIDEBAR */}
+
+      <SellerSidebar
+        activeSection="products"
+      />
+
+      {/* CONTENT */}
 
       <div className="
-        flex
-        justify-between
-        items-center
-        mb-8
-      ">
-
-        <button
-          onClick={() =>
-            navigate(-1)
-          }
-          className="
-            bg-gray-800
-            hover:bg-gray-900
-            text-white
-            px-6
-            py-3
-            rounded-2xl
-            font-bold
-            shadow-md
-          "
-        >
-          ← Volver
-        </button>
-
-        <h1 className="
-          text-5xl
-          font-black
-        ">
-          Crear Producto 🛍️
-        </h1>
-
-      </div>
-
-      {/* FORM */}
-
-      <div className="
-        bg-white
-        rounded-3xl
-        shadow-lg
+        flex-1
         p-8
-        max-w-5xl
-        mx-auto
       ">
+
+        {/* HEADER */}
 
         <div className="
-          grid
-          grid-cols-1
-          md:grid-cols-2
-          gap-6
+          mb-10
         ">
 
-          {/* NAME */}
+          <h1 className="
+            text-5xl
+            font-black
+            text-gray-900
+            mb-2
+          ">
+            Crear Producto 🛍️
+          </h1>
 
-          <input
-            type="text"
-            placeholder="Nombre producto"
-            value={product.name}
-            onChange={(e) =>
-              setProduct({
-                ...product,
-                name:
-                  e.target.value,
-              })
-            }
-            className="
-              border
-              rounded-2xl
-              p-4
-            "
-          />
-
-          {/* DESCRIPTION */}
-
-          <input
-            type="text"
-            placeholder="Descripción"
-            value={product.description}
-            onChange={(e) =>
-              setProduct({
-                ...product,
-                description:
-                  e.target.value,
-              })
-            }
-            className="
-              border
-              rounded-2xl
-              p-4
-            "
-          />
-
-          {/* CATEGORY */}
-
-          <select
-            value={product.category}
-            onChange={(e) =>
-              setProduct({
-                ...product,
-                category:
-                  e.target.value,
-              })
-            }
-            className="
-              border
-              rounded-2xl
-              p-4
-            "
-          >
-
-            <option value="Damas">
-              👩 Damas
-            </option>
-
-            <option value="Caballeros">
-              👨 Caballeros
-            </option>
-
-            <option value="Niños">
-              👦 Niños
-            </option>
-
-            <option value="Zapatos">
-              👟 Zapatos
-            </option>
-
-            <option value="Accesorios">
-              👜 Accesorios
-            </option>
-
-          </select>
-
-          {/* SIZE */}
-
-          <select
-            value={product.size}
-            onChange={(e) =>
-              setProduct({
-                ...product,
-                size:
-                  e.target.value,
-              })
-            }
-            className="
-              border
-              rounded-2xl
-              p-4
-            "
-          >
-
-            <option value="XS">
-              XS
-            </option>
-
-            <option value="S">
-              S
-            </option>
-
-            <option value="M">
-              M
-            </option>
-
-            <option value="L">
-              L
-            </option>
-
-            <option value="XL">
-              XL
-            </option>
-
-          </select>
-
-          {/* PRICE */}
-
-          <input
-            type="number"
-            placeholder="Precio"
-            value={product.price}
-            onChange={(e) =>
-              setProduct({
-                ...product,
-                price:
-                  e.target.value,
-              })
-            }
-            className="
-              border
-              rounded-2xl
-              p-4
-            "
-          />
-
-          {/* STOCK */}
-
-          <input
-            type="number"
-            placeholder="Stock"
-            value={product.stock}
-            onChange={(e) =>
-              setProduct({
-                ...product,
-                stock:
-                  e.target.value,
-              })
-            }
-            className="
-              border
-              rounded-2xl
-              p-4
-            "
-          />
+          <p className="
+            text-gray-500
+            text-lg
+          ">
+            Agrega nuevos productos
+            a tu tienda.
+          </p>
 
         </div>
 
-        {/* BUTTON */}
+        {/* FORM */}
 
-        <button
-          onClick={handleCreate}
-          disabled={loading}
-          className="
-            mt-8
-            bg-indigo-600
-            hover:bg-indigo-700
-            text-white
-            px-8
-            py-4
-            rounded-2xl
-            font-bold
-            shadow-lg
-            transition
-          "
-        >
-          {
-            loading
-              ? "Creando..."
-              : "Guardar producto"
-          }
-        </button>
+        <div className="
+          bg-white
+          rounded-3xl
+          shadow-lg
+          p-8
+          max-w-5xl
+        ">
+
+          <div className="
+            grid
+            grid-cols-1
+            md:grid-cols-2
+            gap-6
+          ">
+
+            {/* NAME */}
+
+            <div>
+
+              <label className="
+                font-semibold
+                block
+                mb-2
+              ">
+                Nombre
+              </label>
+
+              <input
+                type="text"
+                placeholder="Nombre producto"
+                value={product.name}
+                onChange={(e) =>
+                  setProduct({
+                    ...product,
+                    name:
+                      e.target.value,
+                  })
+                }
+                className="
+                  w-full
+                  border
+                  rounded-2xl
+                  p-4
+                  outline-none
+                  focus:ring-4
+                  focus:ring-indigo-200
+                "
+              />
+
+            </div>
+
+            {/* DESCRIPTION */}
+
+            <div>
+
+              <label className="
+                font-semibold
+                block
+                mb-2
+              ">
+                Descripción
+              </label>
+
+              <input
+                type="text"
+                placeholder="Descripción"
+                value={product.description}
+                onChange={(e) =>
+                  setProduct({
+                    ...product,
+                    description:
+                      e.target.value,
+                  })
+                }
+                className="
+                  w-full
+                  border
+                  rounded-2xl
+                  p-4
+                  outline-none
+                  focus:ring-4
+                  focus:ring-indigo-200
+                "
+              />
+
+            </div>
+
+            {/* CATEGORY */}
+
+            <div>
+
+              <label className="
+                font-semibold
+                block
+                mb-2
+              ">
+                Categoría
+              </label>
+
+              <select
+                value={product.categoryId}
+                onChange={(e) =>
+                  setProduct({
+                    ...product,
+                    categoryId:
+                      e.target.value,
+                  })
+                }
+                className="
+                  w-full
+                  border
+                  rounded-2xl
+                  p-4
+                  outline-none
+                  focus:ring-4
+                  focus:ring-indigo-200
+                "
+              >
+
+                <option value="">
+                  Seleccionar categoría
+                </option>
+
+                {
+                  categories.map(
+                    (category: any) => (
+
+                    <option
+                      key={category.id}
+                      value={category.id}
+                    >
+                      {category.name}
+                    </option>
+
+                  ))
+                }
+
+              </select>
+
+            </div>
+
+            {/* PRICE */}
+
+            <div>
+
+              <label className="
+                font-semibold
+                block
+                mb-2
+              ">
+                Precio
+              </label>
+
+              <input
+                type="number"
+                placeholder="Precio"
+                value={product.price}
+                onChange={(e) =>
+                  setProduct({
+                    ...product,
+                    price:
+                      e.target.value,
+                  })
+                }
+                className="
+                  w-full
+                  border
+                  rounded-2xl
+                  p-4
+                  outline-none
+                  focus:ring-4
+                  focus:ring-indigo-200
+                "
+              />
+
+            </div>
+
+            {/* STOCK */}
+
+            <div>
+
+              <label className="
+                font-semibold
+                block
+                mb-2
+              ">
+                Stock
+              </label>
+
+              <input
+                type="number"
+                placeholder="Stock"
+                value={product.stock}
+                onChange={(e) =>
+                  setProduct({
+                    ...product,
+                    stock:
+                      e.target.value,
+                  })
+                }
+                className="
+                  w-full
+                  border
+                  rounded-2xl
+                  p-4
+                  outline-none
+                  focus:ring-4
+                  focus:ring-indigo-200
+                "
+              />
+
+            </div>
+
+          </div>
+
+          {/* BUTTON */}
+
+          <div className="
+            mt-10
+          ">
+
+            <button
+              onClick={handleCreate}
+              disabled={loading}
+              className="
+                bg-indigo-600
+                hover:bg-indigo-700
+                disabled:bg-gray-400
+                text-white
+                px-8
+                py-4
+                rounded-2xl
+                font-bold
+                shadow-lg
+                transition
+              "
+            >
+
+              {
+                loading
+                  ? "Creando producto..."
+                  : "➕ Guardar producto"
+              }
+
+            </button>
+
+          </div>
+
+        </div>
 
       </div>
 

@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
 
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
-  const [role, setRole] = useState("");
+  const [role, setRole] =
+    useState("");
 
   // =====================================
   // LOAD ROLE
@@ -44,6 +46,18 @@ export default function Navbar() {
     return null;
   }
 
+  // =====================================
+  // BUYER NAVBAR HIDDEN
+  // =====================================
+
+  if (role === "BUYER") {
+    return null;
+  }
+
+  // =====================================
+  // ADMIN NAVBAR
+  // =====================================
+
   return (
 
     <div
@@ -54,14 +68,6 @@ export default function Navbar() {
       }}
     >
 
-      <span
-        style={{
-          marginRight: "20px",
-        }}
-      >
-        Rol: {role || "INVITADO"}
-      </span>
-
       {role === "ADMIN" && (
 
         <button
@@ -71,17 +77,7 @@ export default function Navbar() {
         >
           Admin
         </button>
-      )}
 
-      {role === "BUYER" && (
-
-        <button
-          onClick={() =>
-            navigate("/buyer")
-          }
-        >
-          Buyer
-        </button>
       )}
 
       {role && (
@@ -98,5 +94,6 @@ export default function Navbar() {
       )}
 
     </div>
+
   );
 }
