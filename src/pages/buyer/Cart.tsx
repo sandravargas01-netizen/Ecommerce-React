@@ -8,6 +8,10 @@ import {
   useNavigate
 } from "react-router-dom";
 
+import {
+  createOrder
+} from "../../services/orderService";
+
 const Cart = () => {
 
   const {
@@ -18,6 +22,74 @@ const Cart = () => {
 
   const navigate =
     useNavigate();
+
+    // =====================================
+// CHECKOUT
+// =====================================
+
+const handleCheckout =
+  async () => {
+
+    try {
+
+      // ===============================
+      // TRANSFORM ITEMS
+      // ===============================
+
+      const orderItems =
+        items.map((item) => ({
+
+          productId:
+            Number(item.id),
+
+          quantity:
+            item.quantity,
+        }));
+
+      console.log(
+        "ORDER ITEMS:",
+        orderItems
+      );
+
+      // ===============================
+      // CREATE ORDER
+      // ===============================
+
+      await createOrder(
+        orderItems
+      );
+
+      // ===============================
+      // SUCCESS
+      // ===============================
+
+      alert(
+        "✅ Compra realizada correctamente"
+      );
+
+      // ===============================
+      // CLEAR CART
+      // ===============================
+
+      clearCart();
+
+      // ===============================
+      // GO ORDERS
+      // ===============================
+
+      navigate(
+        "/buyer/orders"
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "❌ Error al realizar la compra"
+      );
+    }
+  };
 
   // =====================================
   // TOTAL
@@ -52,59 +124,27 @@ const Cart = () => {
         {/* HEADER */}
 
         <div className="
-          flex
-          justify-between
-          items-center
-          flex-wrap
-          gap-4
           mb-10
         ">
 
-          <div>
+          <h1 className="
+            text-5xl
+            font-black
+            mb-2
+          ">
+            Carrito 🛒
+          </h1>
 
-            <h1 className="
-              text-5xl
-              font-black
-              mb-2
-            ">
-              Carrito 🛒
-            </h1>
-
-            <p className="
-              text-gray-500
-              text-lg
-            ">
-              Revisa tus productos seleccionados
-            </p>
-
-          </div>
-
-          {/* CONTINUE SHOPPING */}
-
-          <button
-            onClick={() =>
-              navigate(
-                "/products"
-              )
-            }
-            className="
-              bg-indigo-600
-              hover:bg-indigo-700
-              text-white
-              px-6
-              py-4
-              rounded-2xl
-              font-bold
-              shadow-lg
-              transition
-            "
-          >
-            ← Seguir comprando
-          </button>
+          <p className="
+            text-gray-500
+            text-lg
+          ">
+            Revisa tus productos seleccionados
+          </p>
 
         </div>
 
-        {/* EMPTY */}
+        {/* EMPTY CART */}
 
         {
           items.length === 0 ? (
@@ -118,7 +158,7 @@ const Cart = () => {
             ">
 
               <h2 className="
-                text-4xl
+                text-5xl
                 font-black
                 mb-4
               ">
@@ -127,7 +167,7 @@ const Cart = () => {
 
               <p className="
                 text-gray-500
-                text-lg
+                text-xl
               ">
                 Agrega productos para continuar.
               </p>
@@ -139,19 +179,21 @@ const Cart = () => {
             <div className="
               grid
               grid-cols-1
-              lg:grid-cols-3
+              xl:grid-cols-3
               gap-8
             ">
 
               {/* PRODUCTS */}
 
               <div className="
-                lg:col-span-2
-                space-y-6
+                xl:col-span-2
+                flex
+                flex-col
+                gap-6
               ">
 
                 {
-                  items.map((item) => (
+                  items.map((item: any) => (
 
                     <div
                       key={item.id}
@@ -161,9 +203,11 @@ const Cart = () => {
                         shadow-lg
                         p-6
                         flex
-                        items-center
+                        flex-col
+                        md:flex-row
                         gap-6
-                        flex-wrap
+                        items-center
+                        justify-between
                       "
                     >
 
@@ -171,8 +215,8 @@ const Cart = () => {
 
                       <img
                         src={
-                          item.imageUrl ||
-                          "https://images.unsplash.com/photo-1523275335684-37898b6baf30"
+                          item.image ||
+                          "https://via.placeholder.com/200"
                         }
                         alt={item.name}
                         className="
@@ -199,11 +243,9 @@ const Cart = () => {
 
                         <p className="
                           text-gray-500
-                          mb-3
+                          mb-4
                         ">
-                          {
-                            item.description
-                          }
+                          {item.description}
                         </p>
 
                         <div className="
@@ -234,9 +276,7 @@ const Cart = () => {
                           text-indigo-600
                         ">
                           $
-                          {
-                            item.price
-                          }
+                          {item.price}
                         </h3>
 
                       </div>
@@ -317,24 +357,25 @@ const Cart = () => {
                     Total
                   </span>
 
-                  <span>
+                  <span className="
+                    text-indigo-600
+                  ">
                     ${total}
                   </span>
 
                 </div>
 
-                {/* BUTTONS */}
+                {/* ACTIONS */}
 
                 <div className="
-                  space-y-4
+                  flex
+                  flex-col
+                  gap-4
                 ">
 
                   <button
-                    onClick={() =>
-                      navigate(
-                        "/checkout"
-                      )
-                    }
+                  
+                  onClick={handleCheckout}
                     className="
                       w-full
                       bg-green-600
@@ -343,26 +384,26 @@ const Cart = () => {
                       py-4
                       rounded-2xl
                       font-bold
+                      shadow-lg
                       transition
                     "
                   >
-                    ✅ Proceder al pago
+                    Finalizar compra
                   </button>
 
                   <button
                     onClick={clearCart}
                     className="
                       w-full
-                      border
-                      border-gray-300
-                      hover:bg-gray-100
+                      bg-gray-200
+                      hover:bg-gray-300
                       py-4
                       rounded-2xl
                       font-bold
                       transition
                     "
                   >
-                    🗑 Vaciar carrito
+                    Vaciar carrito
                   </button>
 
                 </div>
@@ -377,7 +418,6 @@ const Cart = () => {
       </div>
 
     </>
-
   );
 };
 

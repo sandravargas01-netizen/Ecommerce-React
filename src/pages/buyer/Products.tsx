@@ -1,15 +1,27 @@
 import {
   useEffect,
-  useState
+  useState,
 } from "react";
 
 import {
-  useNavigate
+  useNavigate,
 } from "react-router-dom";
 
 import Navbar from "../../components/Navbar";
 
-import mockProducts from "../../moks/mockProducts";
+import BuyerSidebar from "./BuyerSidebar";
+
+import {
+  getProducts,
+} from "../../services/productService";
+
+import {
+  getCategories,
+} from "../../services/categoryService";
+
+import {
+  useCart
+} from "../../context/CartContext";
 
 export default function Products() {
 
@@ -20,63 +32,131 @@ export default function Products() {
   const navigate =
     useNavigate();
 
+    const {
+  addItem
+} = useCart();
+
   // =====================================
-  // STATE
+  // SIDEBAR
+  // =====================================
+
+  const [
+    activeSection,
+    setActiveSection
+  ] = useState("products");
+
+  // =====================================
+  // STATES
   // =====================================
 
   const [products, setProducts] =
     useState<any[]>([]);
 
+  const [categories, setCategories] =
+    useState<any[]>([]);
+
   const [search, setSearch] =
     useState("");
 
-  const [
-    selectedCategory,
-    setSelectedCategory
-  ] = useState("Todas");
+  const [selectedCategory, setSelectedCategory] =
+    useState("Todas");
+
+  // =====================================
+  // LOAD DATA
+  // =====================================
+
+  useEffect(() => {
+
+    loadProducts();
+
+    loadCategories();
+
+  }, []);
 
   // =====================================
   // LOAD PRODUCTS
   // =====================================
 
-  useEffect(() => {
+  const loadProducts = async () => {
 
-    // ============================
-    // LOCAL PRODUCTS
-    // ============================
+    try {
 
-    const localProducts =
-      localStorage.getItem(
-        "products"
+      const response =
+        await getProducts();
+
+      console.log(
+        "PRODUCTS:",
+        response
       );
 
-    const savedProducts =
-      localProducts
-        ? JSON.parse(localProducts)
-        : [];
+      setProducts(
+        response.data || response
+      );
 
-    // ============================
-    // COMBINE PRODUCTS
-    // ============================
+    } catch (error) {
 
-    setProducts([
-      ...mockProducts,
-      ...savedProducts,
-    ]);
-
-  }, []);
+      console.log(error);
+    }
+  };
 
   // =====================================
-  // CATEGORIES
+  // LOAD CATEGORIES
   // =====================================
 
-  const categories = [
-    "Damas",
-    "Caballeros",
-    "Niños",
-    "Zapatos",
-    "Accesorios",
-  ];
+  const loadCategories = async () => {
+
+    try {
+
+      const response =
+        await getCategories();
+
+      console.log(
+        "CATEGORIES:",
+        response
+      );
+
+      setCategories(
+        response.data || response
+      );
+
+    } catch (error) {
+
+      console.log(error);
+    }
+  };
+
+  // =====================================
+  // FILTER PRODUCTS
+  // =====================================
+
+  const filteredProducts =
+    products.filter((product: any) => {
+
+      const matchSearch =
+
+        product.name
+          ?.toLowerCase()
+          .includes(
+            search.toLowerCase()
+          );
+
+      const matchCategory =
+
+        selectedCategory ===
+        "Todas"
+
+          ? true
+
+          : product.categoryId ===
+            Number(
+              selectedCategory
+            );
+
+      return (
+        matchSearch &&
+        matchCategory
+      );
+    });
 
   return (
 
@@ -84,421 +164,313 @@ export default function Products() {
       <Navbar />
 
       <div className="
-        min-h-screen
+        flex
+        items-start
         bg-gray-100
-        p-6
+        min-h-screen
       ">
 
-        {/* =====================================
-            BACK BUTTON
-        ===================================== */}
+        {/* SIDEBAR */}
 
-        <button
-          onClick={() =>
-            navigate(-1)
+        <BuyerSidebar
+          activeSection={activeSection}
+          setActiveSection={
+            setActiveSection
           }
-          className="
-            bg-gray-800
-            hover:bg-gray-900
-            text-white
-            px-6
-            py-3
-            rounded-2xl
-            font-bold
+        />
+
+        {/* CONTENT */}
+
+        <div className="
+          flex-1
+          p-6
+        ">
+
+          {/* HEADER */}
+
+          <div className="
+            bg-white
+            rounded-3xl
             shadow-md
-            transition
-            mb-8
-          "
-        >
-          ← Volver
-        </button>
-
-        {/* =====================================
-            HEADER
-        ===================================== */}
-
-        <div className="
-          bg-white
-          rounded-3xl
-          shadow-md
-          p-6
-          mb-10
-        ">
-
-          <h1 className="
-            text-5xl
-            font-black
-            mb-2
+            p-6
+            mb-10
           ">
-            Productos 🛍️
-          </h1>
 
-          <p className="
-            text-gray-500
-            text-lg
+            <h1 className="
+              text-5xl
+              font-black
+              mb-2
+            ">
+              Productos 🛍️
+            </h1>
+
+            <p className="
+              text-gray-500
+              text-lg
+            ">
+              Catálogo Ecommerce
+            </p>
+
+          </div>
+
+          {/* FILTERS */}
+
+          <div className="
+            bg-white
+            rounded-3xl
+            shadow-md
+            p-6
+            mb-10
+            flex
+            flex-col
+            md:flex-row
+            gap-5
           ">
-            Catálogo Bodegón Virtual
-          </p>
 
-        </div>
+            {/* SEARCH */}
 
-        {/* =====================================
-            FILTERS
-        ===================================== */}
+            <input
+              type="text"
+              placeholder="Buscar productos..."
+              value={search}
+              onChange={(e) =>
+                setSearch(
+                  e.target.value
+                )
+              }
+              className="
+                flex-1
+                border
+                rounded-2xl
+                p-4
+                outline-none
+                focus:ring-2
+                focus:ring-indigo-500
+              "
+            />
 
-        <div className="
-          bg-white
-          rounded-3xl
-          shadow-md
-          p-6
-          mb-10
-          flex
-          flex-col
-          md:flex-row
-          gap-5
-        ">
+            {/* CATEGORY */}
 
-          {/* SEARCH */}
+            <select
+              value={selectedCategory}
+              onChange={(e) =>
+                setSelectedCategory(
+                  e.target.value
+                )
+              }
+              className="
+                border
+                rounded-2xl
+                p-4
+                min-w-[250px]
+              "
+            >
 
-          <input
-            type="text"
-            placeholder="Buscar productos..."
-            value={search}
-            onChange={(e) =>
-              setSearch(
-                e.target.value
-              )
-            }
-            className="
-              flex-1
-              border
-              rounded-2xl
-              p-4
-              outline-none
-              focus:ring-2
-              focus:ring-indigo-500
-            "
-          />
+              <option value="Todas">
+                Todas las categorías
+              </option>
 
-          {/* CATEGORY */}
+              {
+                categories.map(
+                  (category: any) => (
 
-          <select
-            value={selectedCategory}
-            onChange={(e) =>
-              setSelectedCategory(
-                e.target.value
-              )
-            }
-            className="
-              border
-              rounded-2xl
-              p-4
-              min-w-[250px]
-            "
-          >
+                    <option
+                      key={category.id}
+                      value={category.id}
+                    >
+                      {category.name}
+                    </option>
 
-            <option value="Todas">
-              Todas las categorías
-            </option>
-
-            <option value="Damas">
-              👩 Damas
-            </option>
-
-            <option value="Caballeros">
-              👨 Caballeros
-            </option>
-
-            <option value="Niños">
-              👦 Niños
-            </option>
-
-            <option value="Zapatos">
-              👟 Zapatos
-            </option>
-
-            <option value="Accesorios">
-              👜 Accesorios
-            </option>
-
-          </select>
-
-        </div>
-
-        {/* =====================================
-            CATEGORIES
-        ===================================== */}
-
-        {
-          categories.map(
-            (category) => {
-
-              const filteredProducts =
-                products.filter(
-                  (product) => {
-
-                    const matchCategory =
-
-                      selectedCategory ===
-                      "Todas"
-
-                        ? product.category ===
-                          category
-
-                        : product.category ===
-                          selectedCategory &&
-                          product.category ===
-                          category;
-
-                    const matchSearch =
-
-                      product.name
-                        .toLowerCase()
-                        .includes(
-                          search.toLowerCase()
-                        );
-
-                    return (
-                      matchCategory &&
-                      matchSearch
-                    );
-                  }
-                );
-
-              // ============================
-              // HIDE EMPTY CATEGORY
-              // ============================
-
-              if (
-                filteredProducts.length === 0
-              ) {
-                return null;
+                  )
+                )
               }
 
-              return (
+            </select>
 
-                <div
-                  key={category}
-                  className="mb-16"
-                >
+          </div>
 
-                  {/* =====================================
-                      CATEGORY TITLE
-                  ===================================== */}
+          {/* PRODUCTS */}
 
-                  <div className="
-                    flex
-                    items-center
-                    gap-4
-                    mb-8
-                  ">
+          <div className="
+            grid
+            grid-cols-1
+            sm:grid-cols-2
+            lg:grid-cols-3
+            xl:grid-cols-4
+            gap-8
+          ">
 
-                    <h2 className="
-                      text-4xl
-                      font-black
-                      text-gray-900
+            {
+              filteredProducts.map(
+                (product: any) => (
+
+                  <div
+                    key={product.id}
+                    className="
+                      bg-white
+                      rounded-3xl
+                      shadow-lg
+                      overflow-hidden
+                      hover:scale-105
+                      transition
+                      duration-300
+                    "
+                  >
+
+                    {/* IMAGE */}
+
+                    <img
+                      src={
+                        product.imageUrl ||
+                        "https://via.placeholder.com/300"
+                      }
+                      alt={
+                        product.name
+                      }
+                      className="
+                        w-full
+                        h-72
+                        object-cover
+                      "
+                    />
+
+                    {/* CONTENT */}
+
+                    <div className="
+                      p-6
                     ">
 
-                      {
-                        category === "Damas"
-                          ? "👩 Ropa para Damas"
+                      {/* BRAND */}
 
-                        : category === "Caballeros"
-                          ? "👨 Ropa para Caballeros"
+                      <span className="
+                        bg-indigo-100
+                        text-indigo-700
+                        px-4
+                        py-2
+                        rounded-full
+                        text-sm
+                        font-semibold
+                      ">
+                        {
+                          product.brand ||
+                          "Ecommerce"
+                        }
+                      </span>
 
-                        : category === "Niños"
-                          ? "👦 Ropa para Niños"
+                      {/* NAME */}
 
-                        : category === "Zapatos"
-                          ? "👟 Zapatos"
+                      <h3 className="
+                        text-2xl
+                        font-black
+                        mt-5
+                        mb-2
+                      ">
+                        {
+                          product.name
+                        }
+                      </h3>
 
-                        : "👜 Accesorios"
-                      }
+                      {/* DESCRIPTION */}
 
-                    </h2>
+                      <p className="
+                        text-gray-500
+                        mb-4
+                      ">
+                        {
+                          product.description
+                        }
+                      </p>
 
-                  </div>
+                      {/* PRICE */}
 
-                  {/* =====================================
-                      PRODUCTS GRID
-                  ===================================== */}
+                      <h2 className="
+                        text-3xl
+                        font-black
+                        text-indigo-600
+                        mb-4
+                      ">
+                        $
+                        {
+                          product.price
+                        }
+                      </h2>
 
-                  <div className="
-                    grid
-                    grid-cols-1
-                    sm:grid-cols-2
-                    lg:grid-cols-3
-                    xl:grid-cols-4
-                    gap-8
-                  ">
+                      {/* STOCK */}
 
-                    {
-                      filteredProducts.map(
-                        (product) => (
+                      <p className="
+                        text-gray-600
+                        mb-6
+                      ">
+                        Stock:
+                        {" "}
+                        {
+                          product.stock
+                        }
+                      </p>
 
-                          <div
-                            key={product.id}
-                            className="
-                              bg-white
-                              rounded-3xl
-                              shadow-lg
-                              overflow-hidden
-                              hover:scale-105
-                              transition
-                              duration-300
-                            "
-                          >
+                      {/* BUTTON */}
 
-                            {/* IMAGE */}
+                     <button
 
-                            <img
-                              src={
-                                product.imageUrl
-                              }
-                              alt={
-                                product.name
-                              }
-                              className="
-                                w-full
-                                h-72
-                                object-cover
-                              "
-                            />
+  onClick={() => {
 
-                            {/* CONTENT */}
+    addItem({
 
-                            <div className="
-                              p-6
-                            ">
+      id:
+        String(product.id),
 
-                              {/* BRAND */}
+      name:
+        product.name,
 
-                              <span className="
-                                bg-indigo-100
-                                text-indigo-700
-                                px-4
-                                py-2
-                                rounded-full
-                                text-sm
-                                font-semibold
-                              ">
-                                {
-                                  product.brand
-                                }
-                              </span>
+      price:
+        product.price,
 
-                              {/* NAME */}
+      quantity:
+        1,
 
-                              <h3 className="
-                                text-3xl
-                                font-black
-                                mt-5
-                                mb-2
-                              ">
-                                {
-                                  product.name
-                                }
-                              </h3>
+      image:
+        product.imageUrl,
 
-                              {/* DESCRIPTION */}
+      description:
+        product.description,
+    });
 
-                              <p className="
-                                text-gray-500
-                                mb-4
-                              ">
-                                {
-                                  product.description
-                                }
-                              </p>
+    alert(
+      "✅ Producto agregado al carrito"
+    );
 
-                              {/* SIZE */}
+  }}
 
-                              <div className="
-                                flex
-                                items-center
-                                gap-2
-                                mb-4
-                                flex-wrap
-                              ">
+  className="
+    w-full
+    bg-green-600
+    hover:bg-green-700
+    text-white
+    py-4
+    rounded-2xl
+    font-bold
+    shadow-md
+    transition
+  "
+>
 
-                                <span className="
-                                  bg-gray-200
-                                  px-3
-                                  py-1
-                                  rounded-full
-                                  text-sm
-                                  font-semibold
-                                ">
-                                  Talla:
-                                  {" "}
-                                  {
-                                    product.size
-                                  }
-                                </span>
+  🛒 Agregar al carrito
 
-                              </div>
+</button>           
 
-                              {/* PRICE */}
-
-                              <h2 className="
-                                text-4xl
-                                font-black
-                                text-indigo-600
-                                mb-4
-                              ">
-                                $
-                                {
-                                  product.price
-                                }
-                              </h2>
-
-                              {/* STOCK */}
-
-                              <p className="
-                                text-gray-600
-                                mb-6
-                              ">
-                                Stock:
-                                {" "}
-                                {
-                                  product.stock
-                                }
-                              </p>
-
-                              {/* BUTTON */}
-
-                              <button
-                                className="
-                                  w-full
-                                  bg-green-600
-                                  hover:bg-green-700
-                                  text-white
-                                  py-4
-                                  rounded-2xl
-                                  font-bold
-                                  shadow-md
-                                  transition
-                                "
-                              >
-                                🛒 Agregar al carrito
-                              </button>
-
-                            </div>
-
-                          </div>
-                        )
-                      )
-                    }
+                    </div>
 
                   </div>
-
-                </div>
-              );
+                )
+              )
             }
-          )
-        }
+
+          </div>
+
+        </div>
 
       </div>
+
     </>
   );
 }

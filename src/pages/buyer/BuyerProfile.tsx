@@ -90,6 +90,7 @@ export default function BuyerProfile() {
 
       <div className="
         flex
+        items-start
         bg-slate-100
         min-h-screen
       ">
@@ -159,67 +160,6 @@ export default function BuyerProfile() {
                 Administra tu cuenta
               </p>
 
-            </div>
-
-          </div>
-
-          {/* BANNER */}
-
-          <div className="
-            bg-white
-            rounded-3xl
-            shadow-lg
-            overflow-hidden
-            relative
-            min-h-[450px]
-            mb-10
-          ">
-
-            <img
-              src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b"
-              alt="Banner"
-              className="
-                w-full
-                h-full
-                object-cover
-              "
-            />
-
-            {/* OVERLAY */}
-
-            <div className="
-              absolute
-              inset-0
-              bg-black/40
-              flex
-              flex-col
-              justify-center
-              items-center
-              text-center
-              p-10
-            ">
-
-              <h1 className="
-                text-6xl
-                font-black
-                text-white
-                mb-6
-              ">
-                Bienvenida ❤️
-              </h1>
-
-              <p className="
-                text-2xl
-                text-gray-200
-                max-w-3xl
-              ">
-                Descubre productos increíbles,
-                ofertas exclusivas y una
-                experiencia moderna de compra.
-              </p>
-
-              {/* EDIT BUTTON */}
-
               <button
                 onClick={() =>
                   setEditing(
@@ -227,19 +167,15 @@ export default function BuyerProfile() {
                   )
                 }
                 className="
-                  mt-8
-                  bg-indigo-600
-                  hover:bg-indigo-700
-                  text-white
-                  px-8
-                  py-4
-                  rounded-2xl
+                  mt-2
+                  text-sm
+                  text-indigo-600
+                  hover:text-indigo-800
                   font-semibold
-                  shadow-lg
                   transition
                 "
               >
-                ✏️ Editar perfil
+                Editar perfil
               </button>
 
             </div>
@@ -248,187 +184,37 @@ export default function BuyerProfile() {
 
           {/* EDIT PANEL */}
 
-          {
-            editing && (
+          {editing && (
+
+            <div className="
+              bg-white
+              rounded-3xl
+              shadow-lg
+              p-8
+              max-w-5xl
+            ">
+
+              <h2 className="
+                text-3xl
+                font-bold
+                text-gray-900
+                mb-8
+              ">
+                Información personal
+              </h2>
+
+              {/* GRID */}
 
               <div className="
-                bg-white
-                rounded-3xl
-                shadow-lg
-                p-8
-                max-w-6xl
-                mx-auto
+                grid
+                grid-cols-1
+                md:grid-cols-2
+                gap-6
               ">
 
-                <h2 className="
-                  text-4xl
-                  font-black
-                  text-gray-900
-                  mb-8
-                ">
-                  Información personal
-                </h2>
+                {/* NAME */}
 
-                {/* GRID */}
-
-                <div className="
-                  grid
-                  grid-cols-1
-                  md:grid-cols-2
-                  gap-6
-                ">
-
-                  {/* NAME */}
-
-                  <div>
-
-                    <label className="
-                      block
-                      text-gray-700
-                      font-semibold
-                      mb-2
-                    ">
-                      Nombre
-                    </label>
-
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) =>
-                        setName(
-                          e.target.value
-                        )
-                      }
-                      className="
-                        w-full
-                        border
-                        border-gray-300
-                        rounded-2xl
-                        px-4
-                        py-4
-                        outline-none
-                        focus:ring-2
-                        focus:ring-indigo-500
-                      "
-                    />
-
-                  </div>
-
-                  {/* EMAIL */}
-
-                  <div>
-
-                    <label className="
-                      block
-                      text-gray-700
-                      font-semibold
-                      mb-2
-                    ">
-                      Correo
-                    </label>
-
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) =>
-                        setEmail(
-                          e.target.value
-                        )
-                      }
-                      className="
-                        w-full
-                        border
-                        border-gray-300
-                        rounded-2xl
-                        px-4
-                        py-4
-                        outline-none
-                        focus:ring-2
-                        focus:ring-indigo-500
-                      "
-                    />
-
-                  </div>
-
-                  {/* PHONE */}
-
-                  <div>
-
-                    <label className="
-                      block
-                      text-gray-700
-                      font-semibold
-                      mb-2
-                    ">
-                      Teléfono
-                    </label>
-
-                    <input
-                      type="text"
-                      value={phone}
-                      onChange={(e) =>
-                        setPhone(
-                          e.target.value
-                        )
-                      }
-                      className="
-                        w-full
-                        border
-                        border-gray-300
-                        rounded-2xl
-                        px-4
-                        py-4
-                        outline-none
-                        focus:ring-2
-                        focus:ring-indigo-500
-                      "
-                    />
-
-                  </div>
-
-                  {/* ADDRESS */}
-
-                  <div>
-
-                    <label className="
-                      block
-                      text-gray-700
-                      font-semibold
-                      mb-2
-                    ">
-                      Dirección
-                    </label>
-
-                    <input
-                      type="text"
-                      value={address}
-                      onChange={(e) =>
-                        setAddress(
-                          e.target.value
-                        )
-                      }
-                      className="
-                        w-full
-                        border
-                        border-gray-300
-                        rounded-2xl
-                        px-4
-                        py-4
-                        outline-none
-                        focus:ring-2
-                        focus:ring-indigo-500
-                      "
-                    />
-
-                  </div>
-
-                </div>
-
-                {/* PASSWORD */}
-
-                <div className="
-                  mt-6
-                ">
+                <div>
 
                   <label className="
                     block
@@ -436,18 +222,17 @@ export default function BuyerProfile() {
                     font-semibold
                     mb-2
                   ">
-                    Nueva contraseña
+                    Nombre
                   </label>
 
                   <input
-                    type="password"
-                    value={password}
+                    type="text"
+                    value={name}
                     onChange={(e) =>
-                      setPassword(
+                      setName(
                         e.target.value
                       )
                     }
-                    placeholder="********"
                     className="
                       w-full
                       border
@@ -463,55 +248,176 @@ export default function BuyerProfile() {
 
                 </div>
 
-                {/* BUTTONS */}
+                {/* EMAIL */}
 
-                <div className="
-                  flex
-                  gap-4
-                  mt-8
-                ">
+                <div>
 
-                  <button
-                    onClick={handleSave}
-                    className="
-                      bg-indigo-600
-                      hover:bg-indigo-700
-                      text-white
-                      px-8
-                      py-4
-                      rounded-2xl
-                      font-semibold
-                      shadow-lg
-                      transition
-                    "
-                  >
-                    💾 Guardar cambios
-                  </button>
+                  <label className="
+                    block
+                    text-gray-700
+                    font-semibold
+                    mb-2
+                  ">
+                    Correo
+                  </label>
 
-                  <button
-                    onClick={() =>
-                      setEditing(false)
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) =>
+                      setEmail(
+                        e.target.value
+                      )
                     }
                     className="
-                      bg-gray-300
-                      hover:bg-gray-400
-                      text-gray-800
-                      px-8
-                      py-4
+                      w-full
+                      border
+                      border-gray-300
                       rounded-2xl
-                      font-semibold
-                      transition
+                      px-4
+                      py-4
+                      outline-none
+                      focus:ring-2
+                      focus:ring-indigo-500
                     "
-                  >
-                    Cancelar
-                  </button>
+                  />
+
+                </div>
+
+                {/* PHONE */}
+
+                <div>
+
+                  <label className="
+                    block
+                    text-gray-700
+                    font-semibold
+                    mb-2
+                  ">
+                    Teléfono
+                  </label>
+
+                  <input
+                    type="text"
+                    value={phone}
+                    onChange={(e) =>
+                      setPhone(
+                        e.target.value
+                      )
+                    }
+                    className="
+                      w-full
+                      border
+                      border-gray-300
+                      rounded-2xl
+                      px-4
+                      py-4
+                      outline-none
+                      focus:ring-2
+                      focus:ring-indigo-500
+                    "
+                  />
+
+                </div>
+
+                {/* ADDRESS */}
+
+                <div>
+
+                  <label className="
+                    block
+                    text-gray-700
+                    font-semibold
+                    mb-2
+                  ">
+                    Dirección
+                  </label>
+
+                  <input
+                    type="text"
+                    value={address}
+                    onChange={(e) =>
+                      setAddress(
+                        e.target.value
+                      )
+                    }
+                    className="
+                      w-full
+                      border
+                      border-gray-300
+                      rounded-2xl
+                      px-4
+                      py-4
+                      outline-none
+                      focus:ring-2
+                      focus:ring-indigo-500
+                    "
+                  />
 
                 </div>
 
               </div>
 
-            )
-          }
+              {/* PASSWORD */}
+
+              <div className="mt-6">
+
+                <label className="
+                  block
+                  text-gray-700
+                  font-semibold
+                  mb-2
+                ">
+                  Nueva contraseña
+                </label>
+
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) =>
+                    setPassword(
+                      e.target.value
+                    )
+                  }
+                  placeholder="********"
+                  className="
+                    w-full
+                    border
+                    border-gray-300
+                    rounded-2xl
+                    px-4
+                    py-4
+                    outline-none
+                    focus:ring-2
+                    focus:ring-indigo-500
+                  "
+                />
+
+              </div>
+
+              {/* SAVE BUTTON */}
+
+              <button
+                onClick={handleSave}
+                className="
+                  mt-8
+                  bg-indigo-600
+                  hover:bg-indigo-700
+                  text-white
+                  px-8
+                  py-4
+                  rounded-2xl
+                  font-semibold
+                  shadow-lg
+                  transition
+                "
+              >
+                Guardar cambios
+              </button>
+
+            </div>
+
+          )}
 
         </div>
 

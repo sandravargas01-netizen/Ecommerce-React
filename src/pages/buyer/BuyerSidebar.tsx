@@ -10,13 +10,16 @@ import {
 import { useNavigate } from "react-router-dom";
 
 interface BuyerSidebarProps {
+
   activeSection?: string;
+
   setActiveSection?: any;
 }
 
 export default function BuyerSidebar({
 
   activeSection,
+
   setActiveSection,
 
 }: BuyerSidebarProps) {
@@ -28,13 +31,15 @@ export default function BuyerSidebar({
 
     <div className="
       w-[250px]
-      min-h-screen
+      h-screen
+      sticky
+      top-0
+      self-start
       bg-slate-950
       text-white
       p-5
       flex
       flex-col
-      justify-between
     ">
 
       {/* TOP */}
@@ -64,7 +69,11 @@ export default function BuyerSidebar({
 
         {/* MENU */}
 
-        <div className="space-y-3">
+        <div className="
+          flex
+          flex-col
+          gap-3
+        ">
 
           {/* DASHBOARD */}
 
@@ -76,7 +85,7 @@ export default function BuyerSidebar({
               );
 
               navigate(
-                "/buyer/profile"
+                "/buyer-profile"
               );
 
             }}
@@ -212,73 +221,52 @@ export default function BuyerSidebar({
 
           </button>
 
-          {/* PERFIL */}
-
-          <button
-            onClick={() => {
-
-              setActiveSection(
-                "profile"
-              );
-
-              navigate(
-                "/buyer/profile"
-              );
-
-            }}
-            className={`
-              w-full
-              flex
-              items-center
-              gap-3
-              p-4
-              rounded-2xl
-              transition
-
-              ${
-                activeSection === "profile"
-                  ? "bg-indigo-600"
-                  : "hover:bg-slate-800"
-              }
-            `}
-          >
-
-            <User />
-
-            Perfil
-
-          </button>
-
         </div>
 
       </div>
 
-      {/* LOGOUT */}
+      {/* BOTTOM */}
 
-      <button
-        onClick={() => {
+      <div className="
+        mt-auto
+        flex
+        flex-col
+        gap-3
+        mb-6
+      ">
 
-          localStorage.clear();
+       
+       
 
-          window.location.href = "/";
+        {/* LOGOUT */}
 
-        }}
-        className="
-          flex
-          items-center
-          gap-3
-          p-4
-          rounded-2xl
-          hover:bg-red-500
-          transition
-        "
-      >
+        <button
+          onClick={() => {
 
-        <LogOut />
+            localStorage.clear();
 
-        Cerrar sesión
+            window.location.href = "/";
 
-      </button>
+          }}
+          className="
+            w-full
+            flex
+            items-center
+            gap-3
+            p-4
+            rounded-2xl
+            hover:bg-red-500
+            transition
+          "
+        >
+
+          <LogOut />
+
+          Cerrar sesión
+
+        </button>
+
+      </div>
 
     </div>
   );
