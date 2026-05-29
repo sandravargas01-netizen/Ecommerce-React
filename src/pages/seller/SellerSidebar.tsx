@@ -25,12 +25,11 @@ export default function SellerSidebar({
 
     <div className="
       w-[260px]
-      h-screen
+      min-h-screen
       bg-slate-950
       text-white
       flex
       flex-col
-      justify-between
       p-5
     ">
 

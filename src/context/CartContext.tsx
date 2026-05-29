@@ -23,6 +23,8 @@ export interface CartItem {
 
   quantity: number;
 
+  stock?: number;
+
   image?: string;
 
   description?: string;

@@ -11,6 +11,7 @@ import SellerSidebar from "./SellerSidebar";
 
 import {
   getProducts,
+  updateProduct,
   deleteProduct,
   searchProducts,
   getProductsByCategory
@@ -37,6 +38,12 @@ export default function Inventory() {
 
   const [search, setSearch] =
     useState("");
+
+  const [stockUpdate, setStockUpdate] =
+    useState<Record<string, string>>({});
+
+  const [savingStock, setSavingStock] =
+    useState<Record<string, boolean>>({});
 
   const [
     selectedCategory,
@@ -174,6 +181,76 @@ export default function Inventory() {
     };
 
   // =====================================
+  // UPDATE STOCK
+  // =====================================
+
+  const handleStockChange =
+    (id: string, value: string) => {
+
+      setStockUpdate((prev) => ({
+        ...prev,
+        [id]: value,
+      }));
+    };
+
+  const handleSaveStock =
+    async (product: any) => {
+
+      const stockValue =
+        stockUpdate[String(product.id)] ??
+        String(product.stock || "0");
+
+      const stock = Number(stockValue);
+
+      if (isNaN(stock) || stock < 0) {
+        alert(
+          "⚠️ Ingresa una cantidad de stock válida"
+        );
+
+        return;
+      }
+
+      try {
+
+        setSavingStock((prev) => ({
+          ...prev,
+          [product.id]: true,
+        }));
+
+        const updated = await updateProduct(
+          product.id,
+          {
+            ...product,
+            stock,
+          }
+        );
+
+        setProducts((prev) =>
+          prev.map((item) =>
+            item.id === product.id
+              ? updated
+              : item
+          )
+        );
+
+        setStockUpdate((prev) => ({
+          ...prev,
+          [product.id]: String(updated.stock),
+        }));
+
+        alert("✅ Stock guardado correctamente");
+      } catch (error) {
+        console.log(error);
+        alert("❌ Error al guardar el stock");
+      } finally {
+        setSavingStock((prev) => ({
+          ...prev,
+          [product.id]: false,
+        }));
+      }
+    };
+
+  // =====================================
   // DELETE PRODUCT
   // =====================================
 
@@ -214,8 +291,8 @@ export default function Inventory() {
 
     <div className="
       flex
-      min-h-screen
       bg-gray-100
+      min-h-screen
     ">
 
       {/* SIDEBAR */}
@@ -282,7 +359,7 @@ export default function Inventory() {
 
         </div>
 
-        {/* SEARCH + FILTERS */}
+        {/* SEARCH + FILTERS + CREATE */}
 
         <div className="
           bg-white
@@ -292,143 +369,150 @@ export default function Inventory() {
           mb-8
         ">
 
-          {/* SEARCH */}
-
-          <input
-            type="text"
-            placeholder="Buscar productos..."
-            value={search}
-            onChange={(e) =>
-              handleSearch(
-                e.target.value
-              )
-            }
-            className="
-              w-full
-              border
-              rounded-2xl
-              p-4
-              mb-6
-              outline-none
-              focus:ring-4
-              focus:ring-indigo-300
-            "
-          />
-
-          {/* CATEGORY FILTER */}
-
           <div className="
             flex
-            gap-3
-            flex-wrap
+            flex-col
+            gap-6
           ">
 
-            <button
-              onClick={() =>
-                handleCategory(
-                  "Todos"
-                )
-              }
-              className={`
-                px-5
-                py-2
-                rounded-2xl
-                font-bold
-                transition
+            <div className="
+              flex
+              flex-col
+              gap-4
+              lg:flex-row
+              lg:items-center
+              lg:justify-between
+            ">
 
-                ${
-                  selectedCategory ===
-                  "Todos"
-
-                  ? `
-                    bg-indigo-600
-                    text-white
-                  `
-
-                  : `
-                    bg-gray-200
-                    text-gray-700
-                  `
+              <input
+                type="text"
+                placeholder="Buscar productos..."
+                value={search}
+                onChange={(e) =>
+                  handleSearch(
+                    e.target.value
+                  )
                 }
-              `}
-            >
-              Todos
-            </button>
+                className="
+                  w-full
+                  lg:flex-1
+                  border
+                  rounded-2xl
+                  p-4
+                  outline-none
+                  focus:ring-4
+                  focus:ring-indigo-300
+                "
+              />
 
-            {
-              categories.map(
-                (category: any) => (
+              <button
+                onClick={() =>
+                  navigate(
+                    "/seller/create-product"
+                  )
+                }
+                className="
+                  w-full
+                  lg:w-auto
+                  bg-indigo-600
+                  hover:bg-indigo-700
+                  text-white
+                  px-8
+                  py-4
+                  rounded-2xl
+                  font-bold
+                  shadow-lg
+                  transition
+                "
+              >
+                ➕ Crear producto
+              </button>
 
-                <button
-                  key={category.id}
-                  onClick={() =>
-                    handleCategory(
-                      category.id
-                    )
+            </div>
+
+            <div className="
+              flex
+              gap-3
+              flex-wrap
+            ">
+
+              <button
+                onClick={() =>
+                  handleCategory(
+                    "Todos"
+                  )
+                }
+                className={`
+                  px-5
+                  py-2
+                  rounded-2xl
+                  font-bold
+                  transition
+
+                  ${
+                    selectedCategory ===
+                    "Todos"
+
+                    ? `
+                      bg-indigo-600
+                      text-white
+                    `
+
+                    : `
+                      bg-gray-200
+                      text-gray-700
+                    `
                   }
-                  className={`
-                    px-5
-                    py-2
-                    rounded-2xl
-                    font-bold
-                    transition
+                `}
+              >
+                Todos
+              </button>
 
-                    ${
-                      selectedCategory ===
-                      category.id
+              {
+                categories.map(
+                  (category: any) => (
 
-                      ? `
-                        bg-indigo-600
-                        text-white
-                      `
-
-                      : `
-                        bg-gray-200
-                        text-gray-700
-                      `
+                  <button
+                    key={category.id}
+                    onClick={() =>
+                      handleCategory(
+                        category.id
+                      )
                     }
-                  `}
-                >
+                    className={`
+                      px-5
+                      py-2
+                      rounded-2xl
+                      font-bold
+                      transition
 
-                  {category.name}
+                      ${
+                        selectedCategory ===
+                        category.id
 
-                </button>
+                        ? `
+                          bg-indigo-600
+                          text-white
+                        `
 
-              ))
-            }
+                        : `
+                          bg-gray-200
+                          text-gray-700
+                        `
+                      }
+                    `}
+                  >
+
+                    {category.name}
+
+                  </button>
+
+                ))
+              }
+
+            </div>
 
           </div>
-
-        </div>
-
-        {/* CREATE BUTTON */}
-
-        <div className="
-          flex
-          justify-end
-          mb-8
-        ">
-
-          <button
-            onClick={() =>
-              navigate(
-                "/seller/create-product"
-              )
-            }
-            className="
-              bg-indigo-600
-              hover:bg-indigo-700
-              text-white
-              px-8
-              py-4
-              rounded-2xl
-              font-bold
-              shadow-lg
-              transition
-            "
-          >
-            ➕ Crear producto
-          </button>
 
         </div>
 
@@ -515,25 +599,75 @@ export default function Inventory() {
                     ${product.price}
                   </h3>
 
-                  <p className="
-                    text-gray-600
-                    mb-6
+                  <div className="
+                    mb-4
+                    flex
+                    flex-col
+                    gap-3
                   ">
-                    Stock: {product.stock}
-                  </p>
 
-                  {/* BUTTONS */}
+                    <label className="
+                      text-gray-700
+                      font-semibold
+                    ">
+                      Stock
+                    </label>
+
+                    <input
+                      type="number"
+                      min="0"
+                      value={
+                        stockUpdate[
+                          String(product.id)
+                        ] ?? String(product.stock || 0)
+                      }
+                      onChange={(e) =>
+                        handleStockChange(
+                          String(product.id),
+                          e.target.value
+                        )
+                      }
+                      onBlur={() =>
+                        handleSaveStock(product)
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleSaveStock(product);
+                        }
+                      }}
+                      disabled={
+                        savingStock[
+                          String(product.id)
+                        ]
+                      }
+                      className="
+                        w-full
+                        border
+                        rounded-2xl
+                        p-3
+                        outline-none
+                        focus:ring-4
+                        focus:ring-indigo-200
+                      "
+                    />
+                  </div>
 
                   <div className="
                     flex
                     gap-3
+                    flex-wrap
                   ">
 
                     <button
+                      onClick={() =>
+                        navigate(
+                          `/seller/edit-product/${product.id}`
+                        )
+                      }
                       className="
                         flex-1
-                        bg-yellow-500
-                        hover:bg-yellow-600
+                        bg-indigo-600
+                        hover:bg-indigo-700
                         text-white
                         py-3
                         rounded-2xl

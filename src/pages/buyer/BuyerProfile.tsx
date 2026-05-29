@@ -90,7 +90,6 @@ export default function BuyerProfile() {
 
       <div className="
         flex
-        items-start
         bg-slate-100
         min-h-screen
       ">

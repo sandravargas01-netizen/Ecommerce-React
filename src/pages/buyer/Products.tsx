@@ -165,9 +165,7 @@ export default function Products() {
 
       <div className="
         flex
-        items-start
         bg-gray-100
-        min-h-screen
       ">
 
         {/* SIDEBAR */}
@@ -427,6 +425,9 @@ export default function Products() {
 
       quantity:
         1,
+
+      stock:
+        product.stock,
 
       image:
         product.imageUrl,

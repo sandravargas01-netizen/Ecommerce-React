@@ -3,7 +3,6 @@ import {
   Package,
   ShoppingBag,
   Heart,
-  User,
   LogOut,
 } from "lucide-react";
 
@@ -31,10 +30,7 @@ export default function BuyerSidebar({
 
     <div className="
       w-[250px]
-      h-screen
-      sticky
-      top-0
-      self-start
+      h-auto
       bg-slate-950
       text-white
       p-5
@@ -115,21 +111,24 @@ export default function BuyerSidebar({
           {/* PRODUCTOS */}
 
           <button
-            onClick={() =>
-              navigate(
-                "/buyer/products"
-              )
-            }
-            className="
+            onClick={() => {
+              setActiveSection?.("products");
+              navigate("/buyer/products");
+            }}
+            className={`
               w-full
               flex
               items-center
               gap-3
               p-4
               rounded-2xl
-              hover:bg-slate-800
               transition
-            "
+              ${
+                activeSection === "products"
+                  ? "bg-indigo-600"
+                  : "hover:bg-slate-800"
+              }
+            `}
           >
 
             <Package />
@@ -141,21 +140,24 @@ export default function BuyerSidebar({
           {/* CARRITO */}
 
           <button
-            onClick={() =>
-              navigate(
-                "/buyer/cart"
-              )
-            }
-            className="
+            onClick={() => {
+              setActiveSection?.("cart");
+              navigate("/buyer/cart");
+            }}
+            className={`
               w-full
               flex
               items-center
               gap-3
               p-4
               rounded-2xl
-              hover:bg-slate-800
               transition
-            "
+              ${
+                activeSection === "cart"
+                  ? "bg-indigo-600"
+                  : "hover:bg-slate-800"
+              }
+            `}
           >
 
             <ShoppingBag />
@@ -167,21 +169,24 @@ export default function BuyerSidebar({
           {/* PEDIDOS */}
 
           <button
-            onClick={() =>
-              navigate(
-                "/buyer/orders"
-              )
-            }
-            className="
+            onClick={() => {
+              setActiveSection?.("orders");
+              navigate("/buyer/orders");
+            }}
+            className={`
               w-full
               flex
               items-center
               gap-3
               p-4
               rounded-2xl
-              hover:bg-slate-800
               transition
-            "
+              ${
+                activeSection === "orders"
+                  ? "bg-indigo-600"
+                  : "hover:bg-slate-800"
+              }
+            `}
           >
 
             <ShoppingBag />

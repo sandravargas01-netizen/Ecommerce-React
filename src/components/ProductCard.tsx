@@ -276,6 +276,7 @@ const ProductCard: React.FC<Props> = ({
                 name: product.name,
                 price: product.price,
                 quantity: 1,
+                stock: product.stock,
               })
             }
           >

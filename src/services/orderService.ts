@@ -6,7 +6,8 @@ import api from "./api";
 
 export const createOrder = async (
 
-  items: any[]
+  items: any[],
+  shippingAddressId: number | null = null
 
 ) => {
 
@@ -22,17 +23,11 @@ export const createOrder = async (
 
       {
         items,
-
-        // =========================
-        // TEMP ADDRESS
-        // =========================
-
-        shippingAddressId: 1,
+        shippingAddressId,
       },
 
       {
         headers: {
-
           Authorization:
             `Bearer ${token}`,
         },
