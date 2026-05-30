@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
 const CartDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {
   const { items, removeItem, clearCart } = useCart();
+  const navigate = useNavigate();
   const total = items.reduce((s, i) => s + i.price * i.quantity, 0);
 
   if (!open) return null;
@@ -32,7 +34,15 @@ const CartDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({ open, on
         <div className="mt-4 border-t pt-4">
           <div className="flex items-center justify-between font-semibold">Total <span>${total}</span></div>
           <div className="mt-3 flex gap-2">
-            <button className="flex-1 bg-indigo-600 text-white py-2 rounded">Checkout</button>
+            <button
+              className="flex-1 bg-indigo-600 text-white py-2 rounded"
+              onClick={() => {
+                onClose();
+                navigate('/buyer/cart');
+              }}
+            >
+              Ir al carrito
+            </button>
             <button className="px-3 py-2 border rounded" onClick={clearCart}>Vaciar</button>
           </div>
         </div>

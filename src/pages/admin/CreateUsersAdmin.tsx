@@ -1,329 +1,202 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import AdminSidebar from "../../components/AdminSidebar";
 
-export default function AdminUsers() {
-  const navigate = useNavigate();
+export default function CreateUsersAdmin() {
 
-  const [showForm, setShowForm] =
-    useState(false);
-
- const [users, setUsers] = useState<any[]>([
+  const [users, setUsers] = useState<any[]>([
     {
       id: 1,
-      name: "Admin Sistema",
+      name: "Administrador",
       email: "admin@ecommerce.com",
-      password: "Admin123!",
       role: "ADMIN",
     },
-
     {
       id: 2,
-      name: "Comprador Prueba",
-      email: "buyer@ecommerce.com",
-      password: "Buyer123!",
-      role: "BUYER",
+      name: "Sandra Seller",
+      email: "sandra7@ecommerce.com",
+      role: "SELLER",
     },
-
     {
       id: 3,
-      name: "Vendedor Prueba",
-      email: "seller@ecommerce.com",
-      password: "Seller123!",
-      role: "SELLER",
+      name: "Buyer Demo",
+      email: "buyer@ecommerce.com",
+      role: "BUYER",
     },
   ]);
 
-  const [newUser, setNewUser] =
-  useState<any>({
-      name: "",
-      email: "",
-      password: "",
-      role: "BUYER",
-    });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    role: "BUYER",
+  });
 
-  // CREAR
   const handleCreateUser = () => {
-    if (
-      !newUser.name ||
-      !newUser.email ||
-      !newUser.password
-    ) {
+
+    if (!form.name || !form.email) {
       alert("Completa todos los campos");
       return;
     }
 
-    const user = {
+    const newUser = {
       id: Date.now(),
-      ...newUser,
+      ...form,
     };
 
-    setUsers([...users, user]);
+    setUsers([...users, newUser]);
 
-    setNewUser({
+    setForm({
       name: "",
       email: "",
-      password: "",
       role: "BUYER",
     });
-
-    setShowForm(false);
-
-    alert("Usuario creado");
   };
 
-  // ELIMINAR
-  const handleDelete = (id: number) => {
-    const confirmDelete =
-      window.confirm(
-        "¿Eliminar usuario?"
-      );
-
-    if (!confirmDelete) return;
-
-    setUsers(
-      users.filter(
-        (user) => user.id !== id
-      )
-    );
+  const deleteUser = (id: number) => {
+    setUsers(users.filter((user) => user.id !== id));
   };
 
-  // VER PERFIL
-  const handleView = (role: string) => {
-    if (role === "ADMIN") {
-      navigate("/admin-profile");
-    }
+  return (
+    <div className="flex min-h-screen bg-gray-100">
 
-    if (role === "BUYER") {
-      navigate("/buyer-profile");
-    }
+      <AdminSidebar />
 
-    if (role === "SELLER") {
-      navigate("/seller-profile");
-    }
-  };
+      <div className="flex-1 p-8">
 
-  
-   return (
-  <div className="min-h-screen bg-gray-100 p-6">
+        <h1 className="text-4xl font-black mb-8">
+          Gestión de Usuarios 👥
+        </h1>
 
-    {/* HEADER */}
-    <div className="bg-white rounded-3xl shadow-md p-6 mb-8">
+        <div className="bg-white p-6 rounded-3xl shadow-lg mb-8">
 
-      {/* BOTÓN VOLVER */}
-      <button
-        onClick={() => navigate("/admin-profile")}
-        className="
-          mb-6
-          bg-gray-800
-          hover:bg-gray-900
-          text-white
-          px-5
-          py-3
-          rounded-2xl
-          font-semibold
-          shadow-md
-          transition
-        "
-      >
-        ← Volver atrás
-      </button>
-
-      <h1 className="text-5xl font-black">
-        Gestión de Usuarios 👥
-      </h1>
-
-      <p className="text-gray-500 mt-2">
-        Administración de usuarios del sistema
-      </p>
-    </div>
-
-    {/* CONTENIDO */}
-    <div className="bg-white rounded-3xl shadow-md p-8">
-
-      {/* FORM */}
-      {showForm && (
-        <div className="bg-gray-100 rounded-2xl p-6 mb-8">
-
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
             <input
               type="text"
               placeholder="Nombre"
-              className="border p-3 rounded-xl"
-              value={newUser.name}
+              value={form.name}
               onChange={(e) =>
-                setNewUser({
-                  ...newUser,
+                setForm({
+                  ...form,
                   name: e.target.value,
                 })
               }
+              className="border p-3 rounded-xl"
             />
 
             <input
               type="email"
               placeholder="Correo"
-              className="border p-3 rounded-xl"
-              value={newUser.email}
+              value={form.email}
               onChange={(e) =>
-                setNewUser({
-                  ...newUser,
+                setForm({
+                  ...form,
                   email: e.target.value,
                 })
               }
-            />
-
-            <input
-              type="password"
-              placeholder="Contraseña"
               className="border p-3 rounded-xl"
-              value={newUser.password}
-              onChange={(e) =>
-                setNewUser({
-                  ...newUser,
-                  password: e.target.value,
-                })
-              }
             />
 
             <select
-              className="border p-3 rounded-xl"
-              value={newUser.role}
+              value={form.role}
               onChange={(e) =>
-                setNewUser({
-                  ...newUser,
+                setForm({
+                  ...form,
                   role: e.target.value,
                 })
               }
+              className="border p-3 rounded-xl"
             >
-              <option value="BUYER">
-                BUYER
-              </option>
-
-              <option value="SELLER">
-                SELLER
-              </option>
-
-              <option value="ADMIN">
-                ADMIN
-              </option>
+              <option value="BUYER">BUYER</option>
+              <option value="SELLER">SELLER</option>
+              <option value="ADMIN">ADMIN</option>
             </select>
 
           </div>
 
           <button
             onClick={handleCreateUser}
-            className="mt-5 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-2xl font-bold"
+            className="mt-5 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold"
           >
-            Guardar Usuario
+            ➕ Crear Usuario
           </button>
 
         </div>
-      )}
 
-      {/* TABLA */}
-      <table className="w-full">
+        <div className="bg-white rounded-3xl shadow-lg p-6">
 
-        <thead>
-          <tr className="bg-gray-100">
+          <h2 className="text-2xl font-bold mb-4">
+            Usuarios Registrados
+          </h2>
 
-            <th className="p-4 text-left">
-              Usuario
-            </th>
+          <table className="w-full">
 
-            <th className="p-4 text-left">
-              Rol
-            </th>
+            <thead>
+              <tr className="border-b">
+                <th className="text-left p-3">Nombre</th>
+                <th className="text-left p-3">Correo</th>
+                <th className="text-left p-3">Rol</th>
+                <th className="text-left p-3">Acción</th>
+              </tr>
+            </thead>
 
-            <th className="p-4 text-left">
-              Contraseña
-            </th>
+            <tbody>
 
-            <th className="p-4 text-left">
-              Acción
-            </th>
+              {users.map((user) => (
 
-          </tr>
-        </thead>
+                <tr key={user.id} className="border-b">
 
-        <tbody>
+                  <td className="p-3">
+                    {user.name}
+                  </td>
 
-          {users.map((user) => (
+                  <td className="p-3">
+                    {user.email}
+                  </td>
 
-            <tr
-              key={user.id}
-              className="border-b"
-            >
+                  <td className="p-3">
 
-              <td className="p-4">
+                    <span
+                      className={`
+                        px-3 py-1 rounded-full text-sm font-semibold
+                        ${
+                          user.role === "ADMIN"
+                            ? "bg-red-100 text-red-700"
+                            : user.role === "SELLER"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-green-100 text-green-700"
+                        }
+                      `}
+                    >
+                      {user.role}
+                    </span>
 
-                <h3 className="font-bold text-xl">
-                  {user.name}
-                </h3>
+                  </td>
 
-                <p className="text-gray-500">
-                  {user.email}
-                </p>
+                  <td className="p-3">
 
-              </td>
+                    <button
+                      onClick={() =>
+                        deleteUser(user.id)
+                      }
+                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-semibold"
+                    >
+                      🗑 Eliminar
+                    </button>
 
-              <td className="p-4">
+                  </td>
 
-                <span
-                  className={`px-4 py-2 rounded-xl text-white font-bold
-                  ${
-                    user.role === "ADMIN"
-                      ? "bg-red-500"
-                      : user.role === "SELLER"
-                      ? "bg-orange-500"
-                      : "bg-green-500"
-                  }`}
-                >
-                  {user.role}
-                </span>
+                </tr>
 
-              </td>
+              ))}
 
-              <td className="p-4">
-                {user.password}
-              </td>
+            </tbody>
 
-              <td className="p-4 flex gap-2">
+          </table>
 
-                <button
-                  onClick={() =>
-                    handleView(user.role)
-                  }
-                  className="bg-blue-500 text-white px-4 py-2 rounded-xl"
-                >
-                  Ver
-                </button>
+        </div>
 
-                <button className="bg-yellow-500 text-white px-4 py-2 rounded-xl">
-                  Editar
-                </button>
-
-                <button
-                  onClick={() =>
-                    handleDelete(user.id)
-                  }
-                  className="bg-red-500 text-white px-4 py-2 rounded-xl"
-                >
-                  Eliminar
-                </button>
-
-              </td>
-
-            </tr>
-
-          ))}
-
-        </tbody>
-
-      </table>
+      </div>
 
     </div>
-
-  </div>
-);
-
+  );
 }

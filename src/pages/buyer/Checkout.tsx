@@ -6,8 +6,6 @@ import Navbar from "../../components/Navbar";
 
 import { useCart } from "../../context/CartContext";
 
-import { createOrder } from "../../services/orderService";
-
 import { useAuth } from "../../context/AuthContext";
 
 const Checkout = () => {
@@ -89,43 +87,29 @@ const Checkout = () => {
 
         setLoading(true);
 
-        const payload = {
+        if (!form.fullName || !form.address || !form.city || !form.phone) {
+          setError("Completa todos los datos de envío antes de finalizar la compra");
+          setLoading(false);
+          return;
+        }
 
-          items:
-            items.map(
-              (item) => ({
-                productId:
-                  Number(item.id),
-
-                quantity:
-                  item.quantity,
-              })
-            ),
-
-          shippingAddressId:
-            null,
-        };
-
-        await createOrder(
-          payload
-        );
-
-        clearCart();
-
-        alert(
-          "✅ Pedido realizado correctamente"
-        );
-
-        navigate(
-          "/dashboard"
-        );
+        // Navigate to payment page with shipping data
+        // Don't create address yet, do it during payment processing
+        navigate("/buyer/payment", {
+          state: {
+            shippingData: {
+              ...form,
+              shippingAddressId: null,
+            },
+          },
+        });
 
       } catch (err: any) {
 
         setError(
           err?.response?.data?.message ||
           err.message ||
-          "Error al crear la orden"
+          "Error al procesar el checkout"
         );
 
       } finally {

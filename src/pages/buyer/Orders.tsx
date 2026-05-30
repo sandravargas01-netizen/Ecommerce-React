@@ -18,6 +18,15 @@ export default function Orders() {
     try {
       setLoading(true);
       const response = await getMyOrders();
+console.log(
+  "ORDERS API",
+  JSON.stringify(
+    response.data || response,
+    null,
+    2
+  )
+);
+
       setOrders(response.data || response);
     } catch (err: any) {
       console.error(err);
@@ -51,9 +60,9 @@ export default function Orders() {
 
   const orderCount = orders.length;
   const totalSpent = orders.reduce(
-    (sum, order) => sum + Number(order.total || 0),
-    0
-  );
+  (sum, order) => sum + Number(order.totalAmount || 0),
+  0
+);
   const deliveredCount = orders.filter(
     (order) => order.status === "Entregado"
   ).length;
@@ -129,13 +138,15 @@ export default function Orders() {
                     Fecha: {getOrderDate(order)}
                   </p>
                   <p className="text-gray-500">
-                    Productos: {order.items?.length ?? order.products ?? 0}
+                   <p className="text-gray-500">
+  Estado: {order.status || "PENDING"}
+</p>
                   </p>
                 </div>
 
                 <div className="text-right">
                   <p className="text-4xl font-black text-indigo-600 mb-3">
-                    {formatCurrency(Number(order.total || 0))}
+                    {formatCurrency(Number(order.totalAmount || 0))}
                   </p>
                   <span
                     className={`px-4 py-2 rounded-full text-sm font-bold ${getStatusColor(

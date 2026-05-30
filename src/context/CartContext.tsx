@@ -185,6 +185,11 @@ interface CartContextType
     id: string
   ) => void;
 
+  updateItemQuantity: (
+    id: string,
+    quantity: number
+  ) => void;
+
   clearCart: () => void;
 }
 
@@ -253,6 +258,17 @@ export const CartProvider = ({
     });
   };
 
+  const updateItemQuantity = (
+    id: string,
+    quantity: number
+  ) => {
+    dispatch({
+      type: "UPDATE_ITEM_QUANTITY",
+      id,
+      quantity,
+    });
+  };
+
   const clearCart = () => {
 
     dispatch({
@@ -267,6 +283,7 @@ export const CartProvider = ({
         ...state,
         addItem,
         removeItem,
+        updateItemQuantity,
         clearCart,
       }}
     >

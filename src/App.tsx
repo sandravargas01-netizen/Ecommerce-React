@@ -5,7 +5,7 @@ import {
 } from "react-router-dom";
 
 import { CartProvider } from "./context/CartContext";
-
+import AdminProducts from "./pages/admin/AdminProducts";
 
 // ===============================
 // AUTH
@@ -48,6 +48,8 @@ import Products from "./pages/buyer/Products";
 import Cart from "./pages/buyer/Cart";
 
 import Checkout from "./pages/buyer/Checkout";
+
+import Payment from "./pages/buyer/Payment";
 
 import Orders from "./pages/buyer/Orders";
 
@@ -112,6 +114,8 @@ function App() {
             }
           />
 
+          
+
           <Route
             path="/admin/users"
             element={
@@ -141,6 +145,9 @@ function App() {
       <Products />
 
     </ProtectedRoute>
+
+
+
   }
 />
 
@@ -259,6 +266,17 @@ function App() {
               <ProtectedRoute role="BUYER">
 
                 <Checkout />
+
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/buyer/payment"
+            element={
+              <ProtectedRoute role="BUYER">
+
+                <Payment />
 
               </ProtectedRoute>
             }

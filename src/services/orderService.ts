@@ -7,7 +7,7 @@ import api from "./api";
 export const createOrder = async (
 
   items: any[],
-  shippingAddressId: number | null = null
+  shippingAddressId?: number
 
 ) => {
 
@@ -16,15 +16,20 @@ export const createOrder = async (
       "token"
     );
 
+  const payload: any = {
+    items,
+  };
+
+  if (shippingAddressId != null) {
+    payload.shippingAddressId = shippingAddressId;
+  }
+
   const response =
     await api.post(
 
       "/orders",
 
-      {
-        items,
-        shippingAddressId,
-      },
+      payload,
 
       {
         headers: {

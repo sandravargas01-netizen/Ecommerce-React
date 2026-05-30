@@ -15,15 +15,13 @@ import {
 
 import { getProduct } from "../../services/productService";
 
-import {
-  checkoutCart,
-} from "../../services/checkoutService";
 
 const Cart = () => {
 
   const {
     items,
     removeItem,
+    updateItemQuantity,
     clearCart
   } = useCart();
 
@@ -85,20 +83,8 @@ const Cart = () => {
       setCheckoutLoading(true);
 
       try {
-        const order = await checkoutCart(
-          items
-        );
-
-        console.log(
-          "ORDER CREATED:",
-          order
-        );
-
-        alert(
-          "✅ Compra realizada correctamente"
-        );
-
-        redirigir();
+        navigate("/buyer/checkout");
+        return;
       } catch (error: any) {
         console.error(error);
 
@@ -191,9 +177,26 @@ const Cart = () => {
               <p className="
                 text-gray-500
                 text-xl
+                mb-6
               ">
                 Agrega productos para continuar.
               </p>
+
+              <button
+                onClick={() => navigate("/buyer/products")}
+                className="
+                  bg-indigo-600
+                  hover:bg-indigo-700
+                  text-white
+                  py-4
+                  px-8
+                  rounded-3xl
+                  font-bold
+                  transition
+                "
+              >
+                Ver productos
+              </button>
 
             </div>
 
@@ -273,22 +276,76 @@ const Cart = () => {
 
                         <div className="
                           flex
-                          gap-4
+                          items-center
+                          gap-3
                           flex-wrap
                           mb-4
                         ">
 
-                          <span className="
-                            bg-gray-200
-                            px-4
+                          <div className="
+                            flex
+                            items-center
+                            gap-2
+                            bg-gray-100
+                            px-3
                             py-2
                             rounded-full
-                            text-sm
-                            font-semibold
                           ">
-                            Cantidad:
-                            {" "}
-                            {item.quantity}
+                            <button
+                              onClick={() =>
+                                updateItemQuantity(
+                                  item.id,
+                                  item.quantity - 1
+                                )
+                              }
+                              className="
+                                w-8
+                                h-8
+                                bg-white
+                                rounded-full
+                                border
+                                text-lg
+                                font-bold
+                                text-gray-700
+                              "
+                            >
+                              -
+                            </button>
+
+                            <span className="
+                              text-sm
+                              font-semibold
+                            ">
+                              {item.quantity}
+                            </span>
+
+                            <button
+                              onClick={() =>
+                                updateItemQuantity(
+                                  item.id,
+                                  item.quantity + 1
+                                )
+                              }
+                              className="
+                                w-8
+                                h-8
+                                bg-white
+                                rounded-full
+                                border
+                                text-lg
+                                font-bold
+                                text-gray-700
+                              "
+                            >
+                              +
+                            </button>
+                          </div>
+
+                          <span className="
+                            text-sm
+                            text-gray-500
+                          ">
+                            Stock disponible: {item.stock ?? "-"}
                           </span>
 
                         </div>

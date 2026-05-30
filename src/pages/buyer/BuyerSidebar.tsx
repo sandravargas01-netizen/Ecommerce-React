@@ -8,6 +8,8 @@ import {
 
 import { useNavigate } from "react-router-dom";
 
+import { useCart } from "../../context/CartContext";
+
 interface BuyerSidebarProps {
 
   activeSection?: string;
@@ -25,6 +27,8 @@ export default function BuyerSidebar({
 
   const navigate =
     useNavigate();
+
+  const { items } = useCart();
 
   return (
 
@@ -44,7 +48,7 @@ export default function BuyerSidebar({
 
         {/* LOGO */}
 
-        <div className="mb-10">
+        <div className="mb-6">
 
           <h1 className="
             text-4xl
@@ -60,6 +64,30 @@ export default function BuyerSidebar({
           ">
             Panel Buyer
           </p>
+
+          <button
+            onClick={() => {
+              localStorage.clear();
+              window.location.href = "/";
+            }}
+            className="
+              mt-6
+              w-full
+              flex
+              items-center
+              gap-3
+              p-4
+              rounded-2xl
+              bg-red-500
+              hover:bg-red-600
+              text-white
+              font-semibold
+              transition
+            "
+          >
+            <LogOut />
+            Cerrar sesión
+          </button>
 
         </div>
 
@@ -148,6 +176,7 @@ export default function BuyerSidebar({
               w-full
               flex
               items-center
+              justify-between
               gap-3
               p-4
               rounded-2xl
@@ -160,9 +189,22 @@ export default function BuyerSidebar({
             `}
           >
 
-            <ShoppingBag />
+            <div className="flex items-center gap-3">
+              <ShoppingBag />
+              Mi carrito
+            </div>
 
-            Mi carrito
+            <span className="
+              bg-white
+              text-slate-950
+              px-3
+              py-1
+              rounded-full
+              text-sm
+              font-bold
+            ">
+              {items.length}
+            </span>
 
           </button>
 
@@ -227,49 +269,6 @@ export default function BuyerSidebar({
           </button>
 
         </div>
-
-      </div>
-
-      {/* BOTTOM */}
-
-      <div className="
-        mt-auto
-        flex
-        flex-col
-        gap-3
-        mb-6
-      ">
-
-       
-       
-
-        {/* LOGOUT */}
-
-        <button
-          onClick={() => {
-
-            localStorage.clear();
-
-            window.location.href = "/";
-
-          }}
-          className="
-            w-full
-            flex
-            items-center
-            gap-3
-            p-4
-            rounded-2xl
-            hover:bg-red-500
-            transition
-          "
-        >
-
-          <LogOut />
-
-          Cerrar sesión
-
-        </button>
 
       </div>
 
